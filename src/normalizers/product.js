@@ -1,4 +1,5 @@
 import slugify from '../utils/slugify';
+import stripNullEmpty from '../utils/strip-null-empty';
 
 export default ({
   id: pimSyncSourceProductId,
@@ -79,9 +80,5 @@ export default ({
     createdAt
   };
 
-  return Object.keys.filter(x => !!product[x]).reduce((o, i) => {
-    o[i] = product[i];
-    return o;
-  }, {});
-
+  return stripNullEmpty(product);
 }

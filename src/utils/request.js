@@ -1,11 +1,20 @@
-import axios from 'axios';
+export default (app) => async (url, method, params, headers) => {
+  const ajax = app.get('ajax');
 
-export default async (url, method, params, headers) => {
-  const config = { method, url, data: params, headers };
-  if(method === 'GET') {
-    config.params = params;
-  } else {
-    config.data = params;
+  const options = { method, url, headers };
+  if (params) {
+    if (method === 'GET') {
+      options.params = params;
+    } else {
+      options.data = params;
+    }
   }
-  return await axios(config);
+
+  try {
+    const { data } = await ajax(options)
+    return data
+  } catch ({ response }) {
+    return Promise.reject(response.data)
+  }
+
 }

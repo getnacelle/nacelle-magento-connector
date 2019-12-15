@@ -22,3 +22,8 @@ export const invalidRouteVerb = {
   code: 'invalidRouteVerb',
   error: 'Route Option not valid'
 };
+
+export const invalidHeaders = {
+  code: 'invalidHeaders',
+  error: 'Headers are invalid'
+}

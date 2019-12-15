@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# --no-warnings \
+
 node \
 --experimental-modules \
 --es-module-specifier-resolution=node \
