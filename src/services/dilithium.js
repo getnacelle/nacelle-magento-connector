@@ -1,5 +1,5 @@
 export default (app) => {
-  const { client, dilithium: config } = app.get('config');
+  const { client, dilithium: config } = app.get('config')
   const utils = app.get('utils')
 
   return class Dilithium {
@@ -7,6 +7,7 @@ export default (app) => {
     constructor(spaceId, token) {
       this.clientId = spaceId
       this.clientToken = token
+      this.host = config.host
 
       this._setConnectorHeaders()
     }
@@ -19,7 +20,7 @@ export default (app) => {
       }
     }
 
-    buildMutation(mutationName, inputType, params) {
+    buildMutation(mutationName, inputType) {
       return `mutation ${mutationName}($input: ${inputType}!) {
         ${mutationName}(input: $input) {
           count
@@ -28,20 +29,14 @@ export default (app) => {
       }`
     }
 
-    async save(query, variables) {
+    async save(params) {
       try {
-        const url = `${config.host}/${this.clientId}`
-        const params = { query, variables }
+        const url = `${this.host}/${this.clientId}`
 
-        // return await utils.request(url, 'POST', params, headers)
-        return Promise.resolve({
-          url,
-          method: 'POST',
-          params,
-          headers: this.headers
-        })
+        // return await utils.request(url, 'POST', params, this.headers)
+        return Promise.resolve({ url, method: 'POST', params, headers: this.headers })
       } catch (e) {
-        return Promise.reject(e);
+        return Promise.reject(e)
       }
     }
 

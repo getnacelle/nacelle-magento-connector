@@ -1,12 +1,12 @@
 export default (app) => async (url, method, params, headers) => {
-  const ajax = app.get('ajax');
+  const ajax = app.get('ajax')
 
-  const options = { method, url, headers };
+  const options = { method, url, headers }
   if (params) {
     if (method === 'GET') {
-      options.params = params;
+      options.params = params
     } else {
-      options.data = params;
+      options.data = params
     }
   }
 

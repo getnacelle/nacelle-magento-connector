@@ -52,5 +52,5 @@ export default {
     currencyCode: 'USD'
   },
   // in app services available via app.get('services')
-  services: ['dilithium', 'magento']
+  services: ['dilithium', 'magento', 'store']
 }

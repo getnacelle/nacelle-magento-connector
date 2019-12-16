@@ -1,7 +1,7 @@
-import camelCase from '../utils/camel-case';
+import camelCase from '../utils/camel-case'
 
 export default (req, res, next) => {
-  const config = req.app.get('config');
+  const config = req.app.get('config')
   // validate headers logic
   try {
     const { headers } = req
@@ -9,7 +9,7 @@ export default (req, res, next) => {
     const missingHeaders = []
 
     config.router.requiredHeaders.forEach(key => {
-      const header = headers[key];
+      const header = headers[key]
       if(header) {
         validHeaders[camelCase(key)] = header
       } else {
@@ -18,14 +18,14 @@ export default (req, res, next) => {
     })
 
     if(missingHeaders.length) {
-      const missingMsg = missingHeaders.join(', ');
+      const missingMsg = missingHeaders.join(', ')
       return res.status(400).send({
         code: 'invalidHeaders',
         error: `Headers are invalid: missing ${missingMsg}`
       })
     }
-    req.validatedHeaders = validHeaders;
-    return next();
+    req.validatedHeaders = validHeaders
+    return next()
   } catch(e) {
     console.log('validate headers: error', e)
     return res.sendStatus(400)

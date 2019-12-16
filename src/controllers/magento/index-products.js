@@ -1,60 +1,24 @@
-import authHeader from '../../utils/auth-header';
-import normalizer from '../../normalizers/product';
+import authHeader from '../../utils/auth-header'
 
 export default async (req, res) => {
-  const {
-    Dilithium,
-    Magento
-  } = req.app.get('services')
 
-  const {
-    dilithium: config
-  } = req.app.get('config');
+  const { Store } = req.app.get('services')
 
   try {
-    const {
-      orgId,
-      orgToken,
-      pimSyncSourceDomain,
-      magentoToken,
-      magentoEndpoint
-    } = req.validatedHeaders
+    const { limit } = req.body
 
-    const {
-      limit = 1,
-      defaultLocale = config.locale,
-      defaultCurrencyCode = config.currencyCode
-    } = req.params;
+    const store = new Store({
+      ...req.validatedHeaders,
+      ...req.body,
+      authHeader: authHeader(req)
+    })
 
-    const options = {
-      limit,
-      page: 1
-    }
+    const response = await store.indexProducts(limit)
 
-    const magento = new Magento(magentoEndpoint, magentoToken);
-    const dilithium = new Dilithium(orgId, orgToken)
-
-    // get all of the products from Magento store
-    const data = await magento.getProducts(options, authHeader(req))
-    // normalize the data for indexing
-    const normalizedData = data.items.map(normalizer)
-    // build GraphQL mutation
-    const query = dilithium.buildMutation('indexProducts', 'IndexProductsInput')
-    const variables = {
-      input: {
-        pim: {
-          syncSource: config.syncSource,
-          syncSourceDomain: pimSyncSourceDomain,
-          defaultLocale
-        },
-        products: normalizedData
-      }
-    };
-    const response = await dilithium.save(query, variables)
-
-    return res.status(200).send(response);
+    return res.status(200).send(response)
   } catch (e) {
-    return res.status(400).send(e);
+    console.log(e)
+    return res.status(400).send(e)
   }
 
 }

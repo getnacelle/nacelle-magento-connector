@@ -1,5 +1,5 @@
-import slugify from '../utils/slugify';
-import stripNullEmpty from '../utils/strip-null-empty';
+import slugify from '../utils/slugify'
+import stripNullEmpty from '../utils/strip-null-empty'
 
 export default ({
   id: pimSyncSourceProductId,
@@ -13,35 +13,35 @@ export default ({
   extension_attributes: attributes,
   created_at: createdAt
 }) => {
-  const descriptionField = meta.find(x => x.attribute_code === 'description');
+  const descriptionField = meta.find(x => x.attribute_code === 'description')
   const metafields = meta
     .filter(x => x.attribute_code !== 'description')
     .map(({ attribute_code: key, value }) => ({
       namespace: '',
       key,
       value
-    }));
+    }))
 
   const priceRange = {
     min: price,
     max: price,
     currencycode: 'USD' // TODO: get from app config
-  };
+  }
 
-  const [_featuredMedia, ...additionalMedia] = media.sort((a, b) => b.position - a.position);
+  const [_featuredMedia, ...additionalMedia] = media.sort((a, b) => b.position - a.position)
   const featuredMedia = {
     id: _featuredMedia.id,
     src: _featuredMedia.file,
     thumbnailSrc: _featuredMedia.file,
     type: _featuredMedia.media_type
-  };
+  }
 
   const _media = additionalMedia && additionalMedia.length ? additionalMedia.map(item => ({
     id: item.id,
     src: item.file,
     thumbnailSrc: item.file,
     type: item.media_type
-  })) : [];
+  })) : []
 
   const variants = attributes.configurable_product_options ? attributes.configurable_product_options.map(item => ({
     id: item.id,
@@ -57,8 +57,8 @@ export default ({
     //   altText: '',
     //   sku: ''
     // }
-  })) : [];
-  // console.log(productVariations);
+  })) : []
+  // console.log(productVariations)
 
   const product = {
     local: 'en-us',
@@ -78,7 +78,7 @@ export default ({
     metafields,
     variants,
     createdAt
-  };
+  }
 
-  return stripNullEmpty(product);
+  return stripNullEmpty(product)
 }
