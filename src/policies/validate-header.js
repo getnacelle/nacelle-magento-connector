@@ -1,7 +1,7 @@
 import camelCase from '../utils/camel-case'
+import config from '../../config/app'
 
 export default (req, res, next) => {
-  const config = req.app.get('config')
   // validate headers logic
   try {
     const { headers } = req

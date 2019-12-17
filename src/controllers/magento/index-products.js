@@ -1,16 +1,13 @@
-import authHeader from '../../utils/auth-header'
+import Store from '../../services/store'
 
 export default async (req, res) => {
-
-  const { Store } = req.app.get('services')
 
   try {
     const { limit } = req.body
 
     const store = new Store({
       ...req.validatedHeaders,
-      ...req.body,
-      authHeader: authHeader(req)
+      ...req.body
     })
 
     const response = await store.indexProducts(limit)

@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const DEFAULT_PORT = 3000
-const DEFAULT_DILITHIUM_HOST = 'https://hailfrequency.com/graphql/v1/space'
+const DEFAULT_DILITHIUM_HOST = 'http://index-dilithium-staging.us-east-1.elasticbeanstalk.com/'
 
 const {
   PORT = DEFAULT_PORT,
@@ -34,8 +34,6 @@ export default {
     allowOrigins: '*'
   },
   router: {
-    // define middleware run before router
-    policies: ['validate-header', 'session-auth'],
     requiredHeaders: [
       'org-id',
       'org-token',
@@ -50,7 +48,6 @@ export default {
     syncSource: 'magento',
     locale: 'en-us',
     currencyCode: 'USD'
-  },
-  // in app services available via app.get('services')
-  services: ['dilithium', 'magento', 'store']
+  }
+
 }

@@ -13,7 +13,27 @@ export default ({
   extension_attributes: attributes,
   created_at: createdAt
 }) => {
+  // create a new object
+  const product = {
+    locale: 'en-us',
+    pimSyncSourceProductId,
+    handle: slugify(name),
+    title: name,
+    productType,
+    availableForSale: Boolean(status),
+    priceRange: {
+      min: price,
+      max: price,
+      currencycode: 'USD' // TODO: get from app config
+    },
+    createdAt
+  }
+
   const descriptionField = meta.find(x => x.attribute_code === 'description')
+  if (descriptionField) {
+    product.description = descriptionField
+  }
+
   const metafields = meta
     .filter(x => x.attribute_code !== 'description')
     .map(({ attribute_code: key, value }) => ({
@@ -21,64 +41,46 @@ export default ({
       key,
       value
     }))
-
-  const priceRange = {
-    min: price,
-    max: price,
-    currencycode: 'USD' // TODO: get from app config
+  if (metafields.length) {
+    product.metafields
   }
 
-  const [_featuredMedia, ...additionalMedia] = media.sort((a, b) => b.position - a.position)
-  const featuredMedia = {
-    id: _featuredMedia.id,
-    src: _featuredMedia.file,
-    thumbnailSrc: _featuredMedia.file,
-    type: _featuredMedia.media_type
+  if (media.length) {
+    const [featuredMedia, ...additionalMedia] = media.sort((a, b) => b.position - a.position)
+    product.featuredMedia = {
+      id: featuredMedia.id,
+      src: featuredMedia.file,
+      thumbnailSrc: featuredMedia.file,
+      type: featuredMedia.media_type
+    }
+
+    if (additionalMedia) {
+      product.media = additionalMedia.map(item => ({
+        id: item.id,
+        src: item.file,
+        thumbnailSrc: item.file,
+        type: item.media_type
+      }))
+    }
   }
 
-  const _media = additionalMedia && additionalMedia.length ? additionalMedia.map(item => ({
-    id: item.id,
-    src: item.file,
-    thumbnailSrc: item.file,
-    type: item.media_type
-  })) : []
-
-  const variants = attributes.configurable_product_options ? attributes.configurable_product_options.map(item => ({
-    id: item.id,
-    title: item.label,
-    availableForSale: Boolean(status),
-    price,
-    priceCurrency: 'USD', // TODO: get from app config
-    // featuredMedia: {
-    //   id: ,
-    //   type: 'image',
-    //   src: '',
-    //   thumbnailSrc: '',
-    //   altText: '',
-    //   sku: ''
-    // }
-  })) : []
-  // console.log(productVariations)
-
-  const product = {
-    local: 'en-us',
-    pimSyncSourceProductId,
-    handle: slugify(name),
-    title: name,
-    description: descriptionField ? descriptionField.value : '',
-    content: '',
-    priceRange: [],
-    productType,
-    featuredMedia,
-    availableForSale: Boolean(status),
-    vendor: '',
-    tags: [],
-    options: [],
-    media: _media,
-    metafields,
-    variants,
-    createdAt
+  if (attributes.configurable_product_options) {
+    product.variants = attributes.configurable_product_options.map(item => ({
+      id: item.id,
+      title: item.label,
+      availableForSale: Boolean(status),
+      price,
+      priceCurrency: 'USD', // TODO: get from app config
+      // featuredMedia: {
+      //   id: ,
+      //   type: 'image',
+      //   src: '',
+      //   thumbnailSrc: '',
+      //   altText: '',
+      //   sku: ''
+      // }
+    }))
   }
 
-  return stripNullEmpty(product)
+  return product
 }

@@ -7,6 +7,8 @@ export default (object) => {
       output[attribute] = value
     } else if (Array.isArray(value) && value.length) {
       output[attribute] = value
+    } else if (typeof value === 'boolean') {
+      output[attribute] = value
     }
 
     return output
