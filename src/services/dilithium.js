@@ -31,7 +31,6 @@ export default class Dilithium {
       const url = `${this.host}/${this.clientId}`
       const params = { query, variables }
       return await request(url, 'POST', params, this.headers)
-      // return Promise.resolve({ url, method: 'POST', params, headers: this.headers })
     } catch (e) {
       return Promise.reject(e)
     }

@@ -27,7 +27,7 @@ $ npm run start
 ├── app.js
 ├── bin
 ├── config
-│   └── app.js
+│   └── app.js                                    # App config
 ├── data
 ├── lib
 │   ├── hooks.js                                  # Event hooks
@@ -44,8 +44,8 @@ $ npm run start
 │   ├── normalizers
 │   │   ├── collection.js
 │   │   └── product.js
-│   ├── policies
-│   │   └── validate-header.js                    # Route middleware handlers
+│   ├── policies                                  # Route middleware handlers
+│   │   └── validate-header.js
 │   ├── policies.js                               # Route middleware configuration
 │   ├── routes.js                                 # Route definitions
 │   ├── services

@@ -68,7 +68,7 @@ export default class Store {
       const variables = {
         input: {
           pim: {
-            syncSource: config.syncSource,
+            syncSource: config.dilithium.syncSource,
             syncSourceDomain: this.syncSourceDomain,
             defaultLocale: this.locale
           },

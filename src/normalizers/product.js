@@ -22,16 +22,16 @@ export default ({
     productType,
     availableForSale: Boolean(status),
     priceRange: {
-      min: price,
-      max: price,
-      currencycode: 'USD' // TODO: get from app config
+      min: price.toString(),
+      max: price.toString(),
+      currencyCode: 'USD' // TODO: get from app config
     },
     createdAt
   }
 
   const descriptionField = meta.find(x => x.attribute_code === 'description')
   if (descriptionField) {
-    product.description = descriptionField
+    product.description = JSON.stringify(descriptionField.value)
   }
 
   const metafields = meta
