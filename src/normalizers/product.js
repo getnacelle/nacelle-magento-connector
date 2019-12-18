@@ -1,6 +1,8 @@
 import slugify from '../utils/slugify'
 import stripNullEmpty from '../utils/strip-null-empty'
 
+import { getAttribute } from '../utils/normalizer-helpers'
+
 export default ({
   id: pimSyncSourceProductId,
   name,
@@ -12,10 +14,10 @@ export default ({
   media_gallery_entries: media,
   extension_attributes: attributes,
   created_at: createdAt
-}) => {
+}, config) => {
   // create a new object
   const product = {
-    locale: 'en-us',
+    locale: config.locale,
     pimSyncSourceProductId,
     handle: slugify(name),
     title: name,
@@ -24,14 +26,16 @@ export default ({
     priceRange: {
       min: price.toString(),
       max: price.toString(),
-      currencyCode: 'USD' // TODO: get from app config
+      currencyCode: config.currencyCode
     },
     createdAt
   }
 
-  const descriptionField = meta.find(x => x.attribute_code === 'description')
-  if (descriptionField) {
-    product.description = JSON.stringify(descriptionField.value)
+  if (attributes.length) {
+    const description = getAttribute(attributes, 'description')
+    if (description) {
+      product.description = JSON.stringify(description)
+    }
   }
 
   const metafields = meta
@@ -46,22 +50,15 @@ export default ({
   }
 
   if (media.length) {
-    const [featuredMedia, ...additionalMedia] = media.sort((a, b) => b.position - a.position)
-    product.featuredMedia = {
-      id: featuredMedia.id,
-      src: featuredMedia.file,
-      thumbnailSrc: featuredMedia.file,
-      type: featuredMedia.media_type
-    }
+    const _media = media.map(item => ({
+      id: item.id,
+      src: `${config.staticUrl}${item.file}`,
+      thumbnailSrc: `${config.staticUrl}${item.file}`,
+      type: item.media_type
+    }))
 
-    if (additionalMedia) {
-      product.media = additionalMedia.map(item => ({
-        id: item.id,
-        src: item.file,
-        thumbnailSrc: item.file,
-        type: item.media_type
-      }))
-    }
+    product.featuredMedia = _media[0]
+    product.media = _media
   }
 
   if (attributes.configurable_product_options) {
@@ -70,15 +67,7 @@ export default ({
       title: item.label,
       availableForSale: Boolean(status),
       price,
-      priceCurrency: 'USD', // TODO: get from app config
-      // featuredMedia: {
-      //   id: ,
-      //   type: 'image',
-      //   src: '',
-      //   thumbnailSrc: '',
-      //   altText: '',
-      //   sku: ''
-      // }
+      priceCurrency: config.currencyCode
     }))
   }
 
