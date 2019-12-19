@@ -127,6 +127,33 @@ export default class Magento {
     }
   }
 
+  /**
+   * @method getPages
+   * @description get pages
+   *
+   * @param {object} options
+   *
+   * @return {promise<object>} - { items, search_criteria, total_count }
+   */
+  async getPages({ limit, page }) {
+    const params = this.buildSearchParams({ limit, page })
+
+    try {
+      return await this.request('cmsPage/search', params)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * @method request
+   * @description ajax helper via axios
+   *
+   * @param {string} uri
+   * @param {object} params
+   *
+   * @return {promise<any>}
+   */
   async request(uri, params = {}) {
     let url = `${this.host}/${uri}`
 
@@ -136,6 +163,14 @@ export default class Magento {
     return await request(url, 'GET', {}, this.headers)
   }
 
+  /**
+   * @method buildSearchParams
+   * @description build search params for query
+   *
+   * @param {object} params
+   *
+   * @return {object} - searchCriteria
+   */
   buildSearchParams(params) {
     const mapped = Object.keys(params).reduce((output, key) => {
       const param = searchCriteriaMap[key]

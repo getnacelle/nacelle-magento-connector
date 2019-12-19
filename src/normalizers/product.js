@@ -14,10 +14,14 @@ export default ({
   media_gallery_entries: media,
   extension_attributes: attributes,
   created_at: createdAt
-}, config) => {
+}, {
+  locale,
+  currencyCode,
+  staticUrl
+}) => {
   // create a new object
   const product = {
-    locale: config.locale,
+    locale,
     pimSyncSourceProductId,
     handle: slugify(name),
     title: name,
@@ -26,7 +30,7 @@ export default ({
     priceRange: {
       min: price.toString(),
       max: price.toString(),
-      currencyCode: config.currencyCode
+      currencyCode: currencyCode
     },
     createdAt
   }
@@ -52,8 +56,8 @@ export default ({
   if (media.length) {
     const _media = media.map(item => ({
       id: item.id,
-      src: `${config.staticUrl}${item.file}`,
-      thumbnailSrc: `${config.staticUrl}${item.file}`,
+      src: `${staticUrl}${item.file}`,
+      thumbnailSrc: `${staticUrl}${item.file}`,
       type: item.media_type
     }))
 
@@ -67,7 +71,7 @@ export default ({
       title: item.label,
       availableForSale: Boolean(status),
       price,
-      priceCurrency: config.currencyCode
+      priceCurrency: currencyCode
     }))
   }
 

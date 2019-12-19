@@ -1,10 +1,14 @@
 import productNormalizer from '../normalizers/product'
 import collectionNormalizer from '../normalizers/collection'
-import slugify from '../utils/slugify'
+import pageNormalizer from '../normalizers/page'
 
 import appConfig from '../../config/app'
 import Magento from '../services/magento'
 import Dilithium from '../services/dilithium'
+
+import slugify from '../utils/slugify'
+
+const IGNORE_CATEGORIES = ['Root Catalog', 'Default Category']
 
 export default class Store {
 
@@ -14,7 +18,7 @@ export default class Store {
     pimsyncsourcedomain,
     magentoToken,
     magentoEndpoint,
-    defaultLocale = appConfig.dilithium.locale,
+    defaultLocale = slugify(appConfig.dilithium.locale),
     defaultCurrencyCode = appConfig.dilithium.currencyCode,
     authHeader
   }) {
@@ -34,7 +38,7 @@ export default class Store {
     const storeConfig = await this.magento.getStoreConfig()
 
     return {
-      locale: storeConfig.locale,
+      locale: slugify(storeConfig.locale),
       currencyCode: storeConfig.base_currency_code,
       mediaUrl: this.secure ? storeConfig.base_media_url : storeConfig.secure_base_media_url,
       staticUrl: this.secure ? storeConfig.base_static_url : storeConfig.secure_base_static_url,
@@ -49,13 +53,13 @@ export default class Store {
       const { items: products } = await this.magento.getProducts({ limit, page: 1 })
 
       const normalizedProducts = products.map(product => productNormalizer(product, config))
-      return await this.buildQueryAndSave('products', normalizedProducts, 'indexProducts', 'IndexProductsInput')
+      return await this.buildQueryAndSave('pim', 'products', normalizedProducts, 'indexProducts', 'IndexProductsInput')
     } catch (e) {
       return Promise.reject(e)
     }
   }
 
-  async indexCollections({ limit, indexProducts = false }) {
+  async indexCollections({ limit, productLimit, indexProducts = false }) {
     try {
       const config = await this.getMagentoConfig()
       // const { items: products } = await this.magento.getAllProducts(limit)
@@ -63,25 +67,36 @@ export default class Store {
       const { items: collections } = await this.magento.getCollections({ limit })
 
       if (indexProducts) {
-        const normalizedProducts = products.map(productNormalizer)
+        const normalizedProducts = products.map(product => productNormalizer(product, config))
         await this.buildQueryAndSave('products', normalizedProducts, 'indexProducts', 'IndexProductsInput')
       }
 
       // the magento category/list endpoint does not adhere to page_size param, need to slice list to workaround
       const collectionQuery = this.bindCollectionsProducts(collections.slice(0, limit), products, config)
-      return await this.buildQueryAndSave('collections', collectionQuery, 'indexCollections', 'IndexCollectionsInput')
+      return await this.buildQueryAndSave('pim', 'collections', collectionQuery, 'indexCollections', 'IndexCollectionsInput')
     } catch (e) {
       return Promise.reject(e)
     }
   }
 
-  async buildQueryAndSave(type, data, mutationName, inputType) {
+  async indexPages({ limit, page = 1 }) {
     try {
+      const config = await this.getMagentoConfig()
+      const { items: pages } = await this.magento.getPages({ limit, page })
 
+      const normalizedPages = pages.map(cmsPage => pageNormalizer(cmsPage, config))
+      return await this.buildQueryAndSave('cms', 'content', normalizedPages, 'indexContent', 'IndexContentInput')
+    } catch (e) {
+      return Promise.reject(e)
+    }
+  }
+
+  async buildQueryAndSave(ref, type, data, mutationName, inputType) {
+    try {
       const query = this.dilithium.buildMutation(mutationName, inputType)
       const variables = {
         input: {
-          pim: {
+          [ref]: {
             syncSource: appConfig.dilithium.syncSource,
             syncSourceDomain: this.syncSourceDomain,
             defaultLocale: this.locale
@@ -118,7 +133,7 @@ export default class Store {
 
   bindCollectionsProducts(collections, products, config) {
     const groupedProductsByCategory = this.groupProductsByCollectionId(products)
-    return this.ignoreCategories(collections, 'Root Catalog', 'Default Category')
+    return this.ignoreCategories(collections, ...IGNORE_CATEGORIES)
       .map(collection => {
         const entity = collectionNormalizer(collection, config)
         const boundProducts = groupedProductsByCategory[collection.id]
