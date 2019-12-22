@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+  app:
+    image: 'docker.pkg.github.com/getnacelle/nacelle-magento-connector/node:latest'
+    container_name: nacelle-magento-connector
+    build: .
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DILITHIUM_HOST: DILITHIUM HOST ENDPOINT
+      DILITHIUM_CLIENT_ID: NACELLE SPACE ID
+      DILITHIUM_TOKEN: NACELLE SPACE TOKEN
+      MAGENTO_HOST: MAGENTO HOST
+      MAGENTO_TOKEN: MAGENTO TOKEN
+    # volumes:
+    #   - ./:/usr/src/app
+    networks:
+      - nacelle-connector
+    env_file:
+      - ./.env
+    ports:
+      - 3000:3000
+    command: 'pm2 start ./pm2.yml'
+
+networks:
+  nacelle-connector:

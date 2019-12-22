@@ -1,6 +1,6 @@
 {
   "name": "@nacelle/nacelle-magento-connector",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "Nacelle connector for Magento Storefront",
   "main": "app.js",
   "repository": "git@github.com:getnacelle/nacelle-magento-connector.git",
@@ -18,13 +18,17 @@
   "private": true,
   "scripts": {
     "start": "./bin/start",
+    "start:dev": "./bin/start-dev",
+    "up:dev": "./bin/up-dev",
+    "down:dev": "./bin/down-dev",
     "test": "./bin/test"
   },
-  "type": "module",
   "dependencies": {
     "axios": "^0.19.0",
     "dotenv": "^8.2.0",
+    "esm": "^3.2.25",
     "express": "^4.17.1",
+    "pm2": "^4.2.1",
     "querystrings": "^0.4.0"
   },
   "devDependencies": {
