@@ -17,11 +17,11 @@ export default class Magento {
     this.host = host
     this.token = token
 
-    this._setConnectorHeaders()
+    this.request = this.request.bind(this)
   }
 
-  _setConnectorHeaders() {
-    this.headers = {
+  get authHeader() {
+    return {
       Authorization: `Bearer ${this.token}`
     }
   }
@@ -63,50 +63,6 @@ export default class Magento {
     } catch (e) {
       return Promise.reject(e)
     }
-  }
-
-  /**
-   * @method getAllProducts
-   * @description get all products from Magento store
-   *
-   * @param {number} batchSize
-   *
-   * @return {promise<array>}
-   */
-  async getAllProducts(batchSize) {
-    try {
-      const items = await this.batchFetchProducts(batchSize, 1)
-      return { items }
-    } catch (e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * @method batchFetchProducts
-   * @description recursively load all products
-   *
-   * @param {number} batchSize
-   * @param {number} page
-   *
-   * @return {promise<array>}
-   */
-  async batchFetchProducts(batchSize, page) {
-    const records = []
-    const {
-      items,
-      search_criteria: pager,
-      total_count: count
-    } = await this.getProducts({ limit: batchSize, page })
-
-    records.push(...items)
-
-    const totalPages = Math.ceil(count / pager.page_size)
-
-    if (pager.current_page < totalPages) {
-      return await this.batchFetchProducts(batchSize, pager.current_page + 1, this.headers)
-    }
-    return records
   }
 
   /**
@@ -160,7 +116,7 @@ export default class Magento {
     if (Object.keys(params).length) {
       url += `?${qs.stringify(params)}`
     }
-    return await request(url, 'GET', {}, this.headers)
+    return await request(url, 'GET', {}, this.authHeader)
   }
 
   /**

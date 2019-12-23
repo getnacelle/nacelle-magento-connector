@@ -1,11 +1,11 @@
-import slugify from '../utils/slugify'
-import stripNullEmpty from '../utils/strip-null-empty'
-
+import { slugify } from '../utils/string-helpers'
+import { stripNullEmpty } from '../utils/object-helpers'
+import { getSeconds } from '../utils/date-helpers'
 import { getAttribute } from '../utils/normalizer-helpers'
 
 export default ({
   id: pimSyncSourceProductId,
-  name,
+  name: title,
   attribute_set_id: collection,
   status,
   price,
@@ -13,26 +13,28 @@ export default ({
   custom_attributes: meta,
   media_gallery_entries: media,
   extension_attributes: attributes,
-  created_at: createdAt
+  created_at
 }, {
   locale,
   currencyCode,
   staticUrl
 }) => {
+
+  const _price = price ? price.toString() : '0'
   // create a new object
   const product = {
     locale,
     pimSyncSourceProductId,
-    handle: slugify(name),
-    title: name,
+    handle: slugify(title),
+    title,
     productType,
     availableForSale: Boolean(status),
     priceRange: {
-      min: price.toString(),
-      max: price.toString(),
+      min: _price,
+      max: _price,
       currencyCode: currencyCode
     },
-    createdAt
+    createdAt: getSeconds(created_at)
   }
 
   if (attributes.length) {
@@ -70,7 +72,7 @@ export default ({
       id: item.id,
       title: item.label,
       availableForSale: Boolean(status),
-      price,
+      price: _price,
       priceCurrency: currencyCode
     }))
   }

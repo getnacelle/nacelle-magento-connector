@@ -1,12 +1,13 @@
-import slugify from '../utils/slugify'
+import { slugify } from '../utils/string-helpers'
+import { getSeconds } from '../utils/date-helpers'
 
 export default ({
   id: cmsSyncSourceContentId,
   identifier,
   title,
   content,
-  creation_time: createdAt,
-  update_time: updatedAt
+  creation_time,
+  update_time
 }, {
   locale
 }) => {
@@ -19,7 +20,7 @@ export default ({
     title,
     content,
     description: content,
-    createdAt,
-    updatedAt
+    createdAt: getSeconds(creation_time),
+    updatedAt: getSeconds(update_time)
   }
 }

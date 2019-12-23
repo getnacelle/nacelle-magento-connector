@@ -27,3 +27,8 @@ export const invalidHeaders = {
   code: 'invalidHeaders',
   error: 'Headers are invalid'
 }
+
+export const noCallback = {
+  code: 'noCallback',
+  error: 'Callback not defined'
+}

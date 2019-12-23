@@ -1,11 +1,14 @@
 import request from '../utils/request'
+import appConfig from '../../config/app'
 
 export default class Dilithium {
 
-  constructor(host, spaceId, token) {
+  constructor(domain, spaceId, token) {
     this.clientId = spaceId
     this.clientToken = token
-    this.host = host
+    this.host = appConfig.dilithium.host
+    this.domain = domain
+    this.locale = 'en-us'
 
     this._setConnectorHeaders()
   }
@@ -24,6 +27,21 @@ export default class Dilithium {
         ids
       }
     }`
+  }
+
+  buildQuery(ref, type, data, mutationName, inputType) {
+    const query = this.buildMutation(mutationName, inputType)
+    const variables = {
+      input: {
+        [ref]: {
+          syncSource: 'magento',
+          syncSourceDomain: this.domain,
+          defaultLocale: this.locale
+        },
+        [type]: data
+      }
+    }
+    return [query, variables]
   }
 
   async save(query, variables) {

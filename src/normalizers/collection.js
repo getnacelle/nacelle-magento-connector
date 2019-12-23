@@ -1,5 +1,4 @@
-import slugify from '../utils/slugify'
-
+import { slugify } from '../utils/string-helpers'
 import { getAttribute } from '../utils/normalizer-helpers'
 
 export default ({
