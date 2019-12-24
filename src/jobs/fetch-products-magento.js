@@ -1,6 +1,8 @@
 import Magento from '../services/magento'
 import appConfig, { app } from '../../config/app'
+
 import { slugify } from '../utils/string-helpers'
+import { makeArray } from '../utils/array-helpers'
 
 export default {
 
@@ -13,11 +15,14 @@ export default {
       type: 'number',
       defaultsTo: 300
     },
-    page: {
+    total: {
       type: 'number',
       defaultsTo: 1
     },
-    config: {
+    magento: {
+      type: 'ref'
+    },
+    dilithiumConfig: {
       type: 'ref'
     }
   },
@@ -28,72 +33,21 @@ export default {
     }
   },
 
-  async fn({ limit, page, config }, exits) {
-    const {
-      orgId,
-      orgToken,
-      pimsyncsourcedomain,
-      magentoToken,
-      magentoEndpoint,
-      defaultLocale,
-      defaultCurrencyCode
-    } = config
-
-    const magento = new Magento(magentoEndpoint, magentoToken)
-
-    // run the requests in parallel
-    const promises = [
-      magento.getStoreConfig(),
-      magento.getProducts({ limit, page })
-    ]
-
+  async fn({ limit, total, magento, dilithiumConfig }, exits) {
     try {
-      const [storeConfig, products] = await Promise.all(promises)
+      // create an array to build additional concurrent product requests
+      const pending = makeArray(total)
+      const promises = pending.map(idx => magento.getProducts({ limit, page: idx + 2 }))
+      // request remaining pages concurrently
+      const results = await Promise.all(promises)
+      const items = results.reduce((o, i) => o.concat(i.items), [])
 
-      const {
+      app.jobs.schedule('push-products-dilithium', {
         items,
-        search_criteria: pager,
-        total_count: count
-      } = products
+        config: { ...dilithiumConfig, ...magento.storeConfig }
+      })
 
-      const isSecure = appConfig.environment === 'production'
-
-      const magentoConfig = {
-        locale: slugify(storeConfig.locale),
-        currencyCode: storeConfig.base_currency_code,
-        mediaUrl: isSecure ? storeConfig.secure_base_media_url : storeConfig.base_media_url,
-        staticUrl: isSecure ? storeConfig.secure_base_static_url : storeConfig.base_static_url,
-        baseUrl: isSecure ? storeConfig.secure_base_url : storeConfig.base_url
-      }
-
-      const { jobs } = app
-
-      // create the
-      while (items.length) {
-        const batch = items.splice(0, 24)
-        jobs.schedule('push-products-dilithium', {
-          items: batch,
-          config: {
-            orgId,
-            orgToken,
-            pimsyncsourcedomain,
-            defaultLocale,
-            defaultCurrencyCode,
-            ...magentoConfig
-          }
-        })
-      }
-
-      const totalPages = Math.ceil(count / pager.page_size)
-
-      if (pager.current_page < totalPages) {
-        jobs.schedule('fetch-products-magento', {
-          limit,
-          page: pager.current_page + 1,
-          config
-        })
-      }
-      return exits.success('done')
+      return exits.success(items)
     } catch (e) {
       return exits.error(e)
     }

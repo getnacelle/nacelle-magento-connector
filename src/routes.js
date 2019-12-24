@@ -1,5 +1,23 @@
+const requiredStoreHeaders = [
+  'org-id',
+  'org-token',
+  'magento-token',
+  'magento-endpoint',
+  'pimsyncsourcedomain'
+]
+
 export default {
-  'POST /magento/index-products': 'magento/index-products',
-  'POST /magento/index-collections': 'magento/index-collections',
-  'POST /magento/index-pages': 'magento/index-pages'
+  'GET /': 'magento/manager',
+  'POST /magento/index-products': {
+    controller: 'magento/index-products',
+    requiredHeaders: requiredStoreHeaders
+  },
+  'POST /magento/index-collections': {
+    controller: 'magento/index-collections',
+    requiredHeaders: requiredStoreHeaders
+  },
+  'POST /magento/index-pages': {
+    controller: 'magento/index-pages',
+    requiredHeaders: requiredStoreHeaders
+  }
 }

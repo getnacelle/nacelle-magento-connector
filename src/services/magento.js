@@ -1,7 +1,8 @@
 import qs from 'querystrings'
 
-import request from '../utils/request'
 import config from '../../config/app'
+import request from '../utils/request'
+import { slugify } from '../utils/string-helpers'
 
 const searchCriteriaMap = {
   limit: 'page_size',
@@ -10,12 +11,13 @@ const searchCriteriaMap = {
 
 export default class Magento {
 
-  constructor(host, token) {
+  constructor(host, token, secure = true) {
     if (!host || !token) {
       throw new Error('Host and Token required')
     }
     this.host = host
     this.token = token
+    this.secure = true
 
     this.request = this.request.bind(this)
   }
@@ -23,6 +25,19 @@ export default class Magento {
   get authHeader() {
     return {
       Authorization: `Bearer ${this.token}`
+    }
+  }
+
+  get storeConfig() {
+    if(this._configuredStore) {
+      return this._configuredStore
+    }
+    return this._configuredStore = {
+      locale: slugify(this._storeConfig.locale),
+      currencyCode: this._storeConfig.base_currency_code,
+      mediaUrl: this.secure ? this._storeConfig.base_media_url : this._storeConfig.secure_base_media_url,
+      staticUrl: this.secure ? this._storeConfig.base_static_url : this._storeConfig.secure_base_static_url,
+      baseUrl: this.secure ? this._storeConfig.base_url : this._storeConfig.secure_base_url
     }
   }
 
@@ -39,7 +54,7 @@ export default class Magento {
         throw new Error('Cannot find default store config')
       }
 
-      this.storeConfig = defaultStore
+      this._storeConfig = defaultStore
 
       return defaultStore
     } catch (e) {

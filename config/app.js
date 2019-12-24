@@ -34,17 +34,19 @@ export default {
 
   security: {
     // define the options available
-    allowedRequestOptions: ['POST'], // , 'GET', 'PUT', 'DELETE'
+    allowedRequestOptions: ['POST', 'GET'], // , 'PUT', 'DELETE'
     allowOrigins: '*'
   },
   router: {
-    requiredHeaders: [
-      'org-id',
-      'org-token',
-      'magento-token',
-      'magento-endpoint',
-      'pimsyncsourcedomain'
-    ]
+    requiredHeaders: {
+      // 'POST /magento/index-products': [
+      //   'org-id',
+      //   'org-token',
+      //   'magento-token',
+      //   'magento-endpoint',
+      //   'pimsyncsourcedomain'
+      // ]
+    }
   },
 
   dilithium: {
