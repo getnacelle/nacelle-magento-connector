@@ -4,6 +4,8 @@ import appConfig, { connector } from '../../config/app'
 import { slugify } from '../utils/string-helpers'
 import { makeArray } from '../utils/array-helpers'
 
+import helper from '../helpers/magento/concurrently-fetch-magento'
+
 export default {
 
   friendlyName: 'Fetch Products',
@@ -11,19 +13,38 @@ export default {
   description: 'Fetch Products from Magento Store',
 
   inputs: {
+    magentoHost: {
+      type: 'string',
+      description: '',
+      required: true
+    },
+    magentoToken: {
+      type: 'string',
+      description: '',
+      required: true
+    },
+    orgId: {
+      type: 'string',
+      description: '',
+      required: true
+    },
+    orgToken: {
+      type: 'string',
+      description: '',
+      required: true
+    },
+    sourceDomain: {
+      type: 'string',
+      description: '',
+      required: true
+    },
     limit: {
       type: 'number',
       defaultsTo: 300
     },
-    total: {
-      type: 'number',
-      defaultsTo: 1
-    },
-    magento: {
-      type: 'ref'
-    },
-    dilithiumConfig: {
-      type: 'ref'
+    secure: {
+      type: 'boolean',
+      defaultsTo: false
     }
   },
 
@@ -33,21 +54,39 @@ export default {
     }
   },
 
-  async fn({ limit, total, magento, dilithiumConfig }, exits) {
+  async fn({
+    magentoHost,
+    magentoToken,
+    orgId,
+    orgToken,
+    sourceDomain,
+    limit,
+    secure
+  }, exits) {
     try {
+      const magento = new Magento(magentoHost, magentoToken)
       // create an array to build additional concurrent product requests
-      const pending = makeArray(total)
-      const promises = pending.map(idx => magento.getProducts({ limit, page: idx + 2 }))
-      // request remaining pages concurrently
-      const results = await Promise.all(promises)
-      const items = results.reduce((o, i) => o.concat(i.items), [])
+      // Initial fetch, retrieve Magento store config and first page of products
+      // these will run concurrently
+      const promises = [
+        magento.getStoreConfig(secure),
+        helper({ host: magento.host, token: magento.token, type: 'products', chunk: limit })
+      ]
+      // assign store config and products response
+      const [storeConfig, products] = await Promise.all(promises)
 
+      // offload the dilithium push to the jobs queue
       connector.jobs.schedule('push-products-dilithium', {
-        items,
-        config: { ...dilithiumConfig, ...magento.storeConfig }
+        items: products,
+        locale: storeConfig.locale,
+        currencyCode: storeConfig.currencyCode,
+        staticUrl: storeConfig.staticUrl,
+        sourceDomain,
+        orgId,
+        orgToken
       })
 
-      return exits.success(items)
+      return exits.success(products)
     } catch (e) {
       return exits.error(e)
     }

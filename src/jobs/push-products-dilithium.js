@@ -16,22 +16,51 @@ export default {
       required: true,
       description: 'array of items to chunk'
     },
-    config: {
-      type: 'ref',
-      required: true,
-      description: 'dilithium and magento store config'
+    sourceDomain: {
+      type: 'string',
+      description: '',
+      required: true
+    },
+    orgId: {
+      type: 'string',
+      description: '',
+      required: true
+    },
+    orgToken: {
+      type: 'string',
+      description: '',
+      required: true
+    },
+    staticUrl: {
+      type: 'string',
+      description: '',
+      required: true
+    },
+    locale: {
+      type: 'string',
+      description: '',
+      defaultsTo: 'en-us'
+    },
+    currencyCode: {
+      type: 'string',
+      description: '',
+      defaultsTo: 'USD'
     }
   },
 
-  async fn({ items, config }, exits) {
-    const {
-      orgId,
-      orgToken,
-      pimsyncsourcedomain
-    } = config
-    const dilithium = new Dilithium(pimsyncsourcedomain, orgId, orgToken)
+  async fn({
+    items,
+    sourceDomain,
+    orgId,
+    orgToken,
+    staticUrl,
+    locale,
+    currencyCode
+  }, exits) {
 
-    const normalized = items.map(product => normalizer(product, config))
+    const dilithium = new Dilithium(sourceDomain, orgId, orgToken)
+
+    const normalized = items.map(product => normalizer(product, { staticUrl, locale, currencyCode }))
     // chunk the products into chunks of 25 records
     const chunked = chunk(normalized, 25)
     // return all of the remaining queries for concurrent processing
@@ -44,7 +73,7 @@ export default {
       })
       const results = await Promise.all(promises)
 
-      return exits.success(results)
+      return exits.success(chunked)
     } catch (e) {
       return exits.error(new Error(e))
     }

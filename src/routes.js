@@ -2,8 +2,8 @@ const requiredStoreHeaders = [
   'org-id',
   'org-token',
   'magento-token',
-  'magento-endpoint',
-  'pimsyncsourcedomain'
+  'magento-host',
+  'source-domain'
 ]
 
 export default {

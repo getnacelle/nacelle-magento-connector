@@ -64,7 +64,7 @@ export default class Magento {
 
       this._storeConfig = defaultStore
 
-      return defaultStore
+      return this.storeConfig
     } catch (e) {
       return Promise.reject(e)
     }

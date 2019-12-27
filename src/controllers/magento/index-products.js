@@ -1,22 +1,31 @@
 import Store from '../../services/store'
+import { connector } from '../../../config/app'
 
 export default async (req, res) => {
-
-  const logger = req.app.get('logger')
 
   try {
     const { limit } = req.body
 
-    const store = new Store({
-      ...req.validatedHeaders,
-      ...req.body
-    })
+    const {
+      sourceDomain,
+      orgId,
+      orgToken,
+      magentoHost,
+      magentoToken
+    } = req.validatedHeaders
 
-    const response = await store.indexProducts(limit)
+    connector.jobs.schedule('fetch-products-magento', {
+      magentoHost,
+      magentoToken,
+      orgId,
+      orgToken,
+      sourceDomain,
+      limit
+    })
 
     return res.status(200).send('Indexing in progress!')
   } catch (e) {
-    logger.error(e)
+    console.log(e)
     return res.status(400).send(e)
   }
 

@@ -20,23 +20,23 @@ const helper = {
   inputs: {
     host: {
       type: 'string',
-      required: true,
-      description: ''
+      description: 'Magento host url',
+      required: true
     },
     token: {
       type: 'string',
-      required: true,
-      description: ''
+      description: 'Magento access token',
+      required: true
     },
     type: {
       type: 'string',
-      required: true,
-      description: ''
+      description: 'Magento stores to get',
+      required: true
     },
     chunk: {
       type: 'number',
-      defaultsTo: 1,
-      description: ''
+      description: 'The size of the get request, e.g. limit',
+      defaultsTo: 1
     }
   },
 
@@ -46,15 +46,16 @@ const helper = {
     }
   },
 
-  async fn({ host, token, type, limit: limit }, exits) {
+  async fn({ host, token, type, chunk }, exits) {
     // Init Magento service
     const magento = new Magento(host, token)
     // get process action
-    const action = magento[actionMap[type]]
+    const action = magento[actionMap[type]].bind(magento)
     if (!action || typeof action !== 'function') {
       return exits.error(new Error('Invalid Type'))
     }
     try {
+
       const {
         // get the product items
         items,
@@ -62,26 +63,25 @@ const helper = {
         search_criteria: pager,
         // assign the total_count attribute to count
         total_count: count
-      } = await action({ limit, page: 1 })
+      } = await action({ limit: chunk, page: 1 })
       // get the total pages contained in Magento store
       const totalPages = Math.ceil(count / pager.page_size)
 
       // check to see if there are more pages
       if (pager.current_page < totalPages) {
         // create an array to map the remaining requests
-        const pending = makeArray(total)
+        const pending = makeArray(totalPages - 1)
         // the promises to run concurrently
-        const promises = pending.map(idx => action({ limit, page: idx + 2 }))
+        const promises = pending.map(idx => action({ limit: chunk, page: idx + 2 }))
         // request remaining pages concurrently
         const results = await Promise.all(promises)
         items.push(...results.reduce((o, i) => o.concat(i.items), []))
       }
 
-      return exits.success(response)
+      return exits.success(items)
     } catch (e) {
       return exits.error(e)
     }
-
   }
 }
 
