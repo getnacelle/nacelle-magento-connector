@@ -14,3 +14,7 @@ export const stripNullEmpty = (object) => {
     return output
   }, {})
 }
+
+export default {
+  stripNullEmpty
+}

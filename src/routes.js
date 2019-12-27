@@ -7,7 +7,6 @@ const requiredStoreHeaders = [
 ]
 
 export default {
-  'GET /': 'magento/manager',
   'POST /magento/index-products': {
     controller: 'magento/index-products',
     requiredHeaders: requiredStoreHeaders

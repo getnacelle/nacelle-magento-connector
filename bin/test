@@ -1,1 +1,6 @@
 #!/bin/sh
+
+rm -rf ./coverage
+NODE_ENV=test \
+jest --detectOpenHandles --coverage --watch
+# && make-coverage-badge

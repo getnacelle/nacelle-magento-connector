@@ -17,9 +17,17 @@ export default class Magento {
     }
     this.host = host
     this.token = token
-    this.secure = true
+    this._secure = secure
 
     this.request = this.request.bind(this)
+  }
+
+  set secure(isSecure) {
+    this._secure = isSecure
+  }
+
+  get secure() {
+    return this._secure
   }
 
   get authHeader() {

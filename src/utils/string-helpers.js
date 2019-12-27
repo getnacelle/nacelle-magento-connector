@@ -10,3 +10,9 @@ export const removeTrailing = (str, char) => {
 export const slugify = (str) => {
   return removeTrailing(str.replace(/[^a-z0-9+]+/gi, '-').toLowerCase(), '-')
 }
+
+export default {
+  camelCase,
+  removeTrailing,
+  slugify
+}

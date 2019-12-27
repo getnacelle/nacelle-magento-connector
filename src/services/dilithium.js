@@ -9,12 +9,10 @@ export default class Dilithium {
     this.host = appConfig.dilithium.host
     this.domain = domain
     this.locale = 'en-us'
-
-    this._setConnectorHeaders()
   }
 
-  _setConnectorHeaders() {
-    this.headers = {
+  get authHeader() {
+    return {
       'org-id': this.clientId,
       token: this.clientToken
     }
@@ -48,7 +46,7 @@ export default class Dilithium {
     try {
       const url = `${this.host}/${this.clientId}`
       const params = { query, variables }
-      return await request(url, 'POST', params, this.headers)
+      return await request(url, 'POST', params, this.authHeader)
     } catch (e) {
       return Promise.reject(e)
     }

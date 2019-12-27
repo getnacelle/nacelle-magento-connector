@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const DEFAULT_PORT = 3000
+const BASE_PATH = process.cwd()
 
 const {
   PORT = DEFAULT_PORT,
@@ -15,16 +16,18 @@ const {
   MAGENTO_HOST = '',
   MAGENTO_TOKEN = ''
 } = process.env
-
 export const port = PORT
 export const environment = NODE_ENV
-export { default as app } from '../lib/server'
+export { default as connector } from '../lib/server'
+export const disableXPoweredBy = false
 
 export default {
   appName: pkg.name,
   client: 'Nacelle Magento Connector',
   environment,
   port,
+
+  basePath: BASE_PATH,
 
   app: {
     request: {

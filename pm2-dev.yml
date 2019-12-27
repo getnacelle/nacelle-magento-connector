@@ -4,6 +4,7 @@ apps:
     autorestart: true
     watch: ['src', 'config', 'lib']
     ignore_watch: ['node_modules']
+    args: ['--color']
     node_args: '-r esm --max_old_space_size=512'
     error_file: ./logs/error.log
     out_file: ./logs/output.log

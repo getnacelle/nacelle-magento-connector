@@ -5,3 +5,7 @@ export const getAttribute = (attributes, key) => {
   }
   return ''
 }
+
+export default {
+  getAttribute
+}

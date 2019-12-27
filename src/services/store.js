@@ -1,6 +1,6 @@
 import uuid from 'uuid'
 
-import appConfig, { app } from '../../config/app'
+import appConfig, { connector } from '../../config/app'
 
 import productNormalizer from '../normalizers/product'
 import collectionNormalizer from '../normalizers/collection'
@@ -50,7 +50,7 @@ export default class Store {
 
     const instanceConfig = { ...this.magento.storeConfig, ...this.dilithium }
     // offload the dilithium push to the jobs queue
-    app.jobs.schedule('push-products-dilithium', {
+    connector.jobs.schedule('push-products-dilithium', {
       items,
       config: instanceConfig
     })
@@ -61,7 +61,7 @@ export default class Store {
     // check to see if there are more pages
     if (pager.current_page < totalPages) {
       const remainingPages = totalPages - 1
-      app.jobs.schedule('fetch-products-magento', {
+      connector.jobs.schedule('fetch-products-magento', {
         limit,
         total: remainingPages,
         magento: this.magento,

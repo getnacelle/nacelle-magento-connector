@@ -1,5 +1,5 @@
 import Magento from '../services/magento'
-import appConfig, { app } from '../../config/app'
+import appConfig, { connector } from '../../config/app'
 
 import { slugify } from '../utils/string-helpers'
 import { makeArray } from '../utils/array-helpers'
@@ -42,7 +42,7 @@ export default {
       const results = await Promise.all(promises)
       const items = results.reduce((o, i) => o.concat(i.items), [])
 
-      app.jobs.schedule('push-products-dilithium', {
+      connector.jobs.schedule('push-products-dilithium', {
         items,
         config: { ...dilithiumConfig, ...magento.storeConfig }
       })

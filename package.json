@@ -1,6 +1,6 @@
 {
   "name": "@nacelle/nacelle-magento-connector",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Nacelle connector for Magento Storefront",
   "main": "app.js",
   "repository": "git@github.com:getnacelle/nacelle-magento-connector.git",
@@ -24,10 +24,11 @@
     "test": "./bin/test"
   },
   "dependencies": {
-    "@babel/core": "^7.7.5",
-    "@babel/preset-env": "^7.7.6",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
     "asciify-image": "^0.1.5",
     "axios": "^0.19.0",
+    "babel-plugin-module-resolver": "^4.0.0",
     "boxen": "^4.2.0",
     "chalk": "^3.0.0",
     "dotenv": "^8.2.0",
@@ -39,5 +40,12 @@
     "pm2": "^4.2.1",
     "querystrings": "^0.4.0",
     "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "@babel/runtime": "^7.7.7",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0",
+    "make-coverage-badge": "^1.2.0"
   }
 }
