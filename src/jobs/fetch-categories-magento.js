@@ -1,14 +1,14 @@
 import Magento from '../services/magento'
 import { connector } from '../../config/app'
 
-import normalizer from '../normalizers/product'
+import { bindCategoriesProducts } from '../utils/magento-helpers'
 import helper from '../helpers/magento/concurrently-fetch-magento'
 
 export default {
 
-  friendlyName: 'Fetch Products Magento',
+  friendlyName: 'Fetch Categories Magento',
 
-  description: 'Fetch Products from Magento Store',
+  description: 'Fetch Categories from Magento Store',
 
   inputs: {
     magentoHost: {
@@ -38,7 +38,7 @@ export default {
     },
     limit: {
       type: 'number',
-      description: 'Limit to fetch products',
+      description: 'Limit to fetch categories',
       defaultsTo: 300
     },
     secure: {
@@ -65,30 +65,30 @@ export default {
   }, exits) {
     try {
       const magento = new Magento(magentoHost, magentoToken)
-      // Initial fetch, retrieve Magento store config and products
+      // Initial fetch, retrieve Magento store config, categories, products
       // these will run concurrently
       const promises = [
         magento.getStoreConfig(secure),
+        helper({ host: magento.host, token: magento.token, type: 'categories', limit }),
         helper({ host: magento.host, token: magento.token, type: 'products', limit })
       ]
       // assign store config and products response
-      const [storeConfig, products] = await Promise.all(promises)
+      const [ storeConfig, categories, products] = await Promise.all(promises)
 
-      const items = products.map(product => normalizer(product, { staticUrl: storeConfig.staticUrl, locale: storeConfig.locale, currencyCode: storeConfig.currencyCode }))
+      const items = bindCategoriesProducts(categories, products, storeConfig)
 
-      // offload the dilithium push to the jobs queue
       connector.jobs.schedule('push-dilithium', {
         items,
         sourceDomain,
         orgId,
         orgToken,
-        resource: 'products',
+        resource: 'collections',
         type: 'pim'
       })
 
       return exits.success(items)
     } catch (e) {
-      return exits.error(new Error(e))
+      return exits.error(e)
     }
 
   }

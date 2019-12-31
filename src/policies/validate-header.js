@@ -3,6 +3,12 @@ import config, { connector } from '../../config/app'
 
 const hasConfigRequiredHeaders = config.router.requiredHeaders && Object.keys(config.router.requiredHeaders).length
 
+/**
+ * Validated the required headers middleware
+ * @params {object} req
+ * @params {object} res
+ * @params {function} next
+ */
 export default (req, res, next) => {
   // validate headers logic
   const validHeaders = {}
@@ -20,6 +26,7 @@ export default (req, res, next) => {
     })
   }
 
+  // route required headers
   const requiredHeaders = connector.router.getRequiredHeaders(routeKey)
   if (requiredHeaders) {
     validateHeaders(requiredHeaders)
@@ -34,7 +41,8 @@ export default (req, res, next) => {
       error: `Headers are invalid: missing ${missingMsg}`
     })
   }
+  // add the validated headers to the req object
   req.validatedHeaders = validHeaders
-  return next()
 
+  return next()
 }

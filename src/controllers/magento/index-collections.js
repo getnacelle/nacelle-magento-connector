@@ -1,25 +1,30 @@
-import Store from '../../services/store'
+import { connector } from '../../../config/app'
 
 export default async (req, res) => {
 
-  const logger = req.app.get('logger')
-
   try {
+    const { limit } = req.body
+    // Explicitly select the params we want to use from the validatedHeaders object
     const {
-      limit = 100,
-      page = 1
-    } = req.body
+      sourceDomain,
+      orgId,
+      orgToken,
+      magentoHost,
+      magentoToken
+    } = req.validatedHeaders
 
-    const store = new Store({
-      ...req.validatedHeaders,
-      ...req.body
+    // Schedule a jobe to run immediately to fetch the Magento Categories concurrently
+    connector.jobs.schedule('fetch-categories-magento', {
+      magentoHost,
+      magentoToken,
+      orgId,
+      orgToken,
+      sourceDomain,
+      limit
     })
 
-    const response = await store.indexCollections({ limit, page })
-
-    return res.status(200).send(response)
+    return res.status(200).send('Indexing in Progress')
   } catch (e) {
-    logger.error(e)
     return res.status(400).send(e)
   }
 

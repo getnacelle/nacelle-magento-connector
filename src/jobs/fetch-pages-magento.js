@@ -1,14 +1,14 @@
 import Magento from '../services/magento'
 import { connector } from '../../config/app'
 
-import normalizer from '../normalizers/product'
+import normalizer from '../normalizers/page'
 import helper from '../helpers/magento/concurrently-fetch-magento'
 
 export default {
 
-  friendlyName: 'Fetch Products Magento',
+  friendlyName: 'Fetch Pages Magento',
 
-  description: 'Fetch Products from Magento Store',
+  description: 'Fetch Pages from Magento Store',
 
   inputs: {
     magentoHost: {
@@ -38,7 +38,7 @@ export default {
     },
     limit: {
       type: 'number',
-      description: 'Limit to fetch products',
+      description: 'Limit to fetch pages',
       defaultsTo: 300
     },
     secure: {
@@ -65,16 +65,16 @@ export default {
   }, exits) {
     try {
       const magento = new Magento(magentoHost, magentoToken)
-      // Initial fetch, retrieve Magento store config and products
+      // Initial fetch, retrieve Magento store config and cms pages
       // these will run concurrently
       const promises = [
         magento.getStoreConfig(secure),
-        helper({ host: magento.host, token: magento.token, type: 'products', limit })
+        helper({ host: magento.host, token: magento.token, type: 'pages', limit })
       ]
       // assign store config and products response
-      const [storeConfig, products] = await Promise.all(promises)
+      const [storeConfig, pages] = await Promise.all(promises)
 
-      const items = products.map(product => normalizer(product, { staticUrl: storeConfig.staticUrl, locale: storeConfig.locale, currencyCode: storeConfig.currencyCode }))
+      const items = pages.map(page => normalizer(page, { locale: storeConfig.locale }))
 
       // offload the dilithium push to the jobs queue
       connector.jobs.schedule('push-dilithium', {
@@ -82,8 +82,8 @@ export default {
         sourceDomain,
         orgId,
         orgToken,
-        resource: 'products',
-        type: 'pim'
+        resource: 'content',
+        type: 'cms'
       })
 
       return exits.success(items)

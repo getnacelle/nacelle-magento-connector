@@ -78,7 +78,7 @@ export default class Magento {
    *
    * @return {promise<array>}
    */
-  async getCollections({ limit = config.app.request.limit, page = 1 }) {
+  async getCategories({ limit = config.app.request.limit, page = 1 }) {
     const params = this.buildSearchParams({ limit, page })
 
     try {

@@ -41,15 +41,13 @@ export default {
     allowOrigins: '*'
   },
   router: {
-    requiredHeaders: {
-      // 'POST /magento/index-products': [
-      //   'org-id',
-      //   'org-token',
-      //   'magento-token',
-      //   'magento-endpoint',
-      //   'pimsyncsourcedomain'
-      // ]
-    }
+    requiredHeaders: [
+      'org-id',
+      'org-token',
+      'magento-token',
+      'magento-host',
+      'source-domain'
+    ]
   },
 
   dilithium: {

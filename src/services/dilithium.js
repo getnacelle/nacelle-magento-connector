@@ -1,5 +1,6 @@
 import request from '../utils/request'
 import appConfig from '../../config/app'
+import { buildMutation } from '../utils/dilithium-helpers'
 
 export default class Dilithium {
 
@@ -18,25 +19,16 @@ export default class Dilithium {
     }
   }
 
-  buildMutation(mutationName, inputType) {
-    return `mutation ${mutationName}($input: ${inputType}!) {
-      ${mutationName}(input: $input) {
-        count
-        ids
-      }
-    }`
-  }
-
-  buildQuery(ref, type, data, mutationName, inputType) {
-    const query = this.buildMutation(mutationName, inputType)
+  buildQuery(type, resource, data, mutationName, inputType) {
+    const query = buildMutation(mutationName, inputType)
     const variables = {
       input: {
-        [ref]: {
+        [type]: {
           syncSource: 'magento',
           syncSourceDomain: this.domain,
           defaultLocale: this.locale
         },
-        [type]: data
+        [resource]: data
       }
     }
     return [query, variables]

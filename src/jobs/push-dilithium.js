@@ -1,20 +1,20 @@
-import Machine from 'machine'
-import Magento from '../../services/magento'
-import appConfig, { connector } from '../../../config/app'
+import Dilithium from '../services/dilithium'
+import appConfig, { connector } from '../../config/app'
 
-import { slugify } from '../../utils/string-helpers'
-import normalizer from '../../normalizers/product'
+import { slugify, camelCase, capitalize } from '../utils/string-helpers'
+import normalizer from '../normalizers/product'
+import { chunk as chunker } from 'lodash'
 
-const helper = {
+export default {
 
-  friendlyName: 'Push Products to Dilithium',
+  friendlyName: 'Push Dilithium',
 
-  description: 'Normalize Products and push them to Dilithium concurrently',
+  description: 'Concurrenty push items to Dilithium concurrently',
 
   inputs: {
-    products: {
+    items: {
       type: 'ref',
-      description: 'A list of products from Magento'
+      description: 'A list of items to push to Dilithium',
       required: true
     },
     sourceDomain: {
@@ -32,25 +32,20 @@ const helper = {
       description: 'Nacelle Store Token',
       required: true
     },
-    staticUrl: {
+    resource: {
       type: 'string',
-      description: 'Magento static url for media objects, e.g. images',
+      description: 'The resource name e.x. products, collections, content',
       required: true
     },
-    locale: {
+    type: {
       type: 'string',
-      description: 'The store locale',
-      defaultsTo: 'en-us'// TODO: get from config
-    },
-    currentyCode: {
-      type: 'string',
-      description: '',
-      defaultTo: 'USD'// TODO: get from config
+      description: 'The Dilithium storage type',
+      defaultsTo: 'pim'
     },
     chunkSize: {
       type: 'number',
       description: 'The size of the chunk used to push to Dilithium',
-      defaultTo: 25
+      defaultsTo: 25
     }
   },
 
@@ -62,24 +57,23 @@ const helper = {
 
   async fn({
     items,
-    sourceDomain ,
+    sourceDomain,
     orgId,
     orgToken,
-    staticUrl,
-    locale,
-    currentyCode,
+    resource,
+    type,
     chunkSize
   }, exits) {
     const dilithium = new Dilithium(sourceDomain, orgId, orgToken)
-
-    const normalized = items.map(product => normalizer(product, { locale, currentyCode, staticUrl }))
-    // chunk the products into chunks of 25 records
-    const chunked = chunk(normalized, 25)
+    const mutationName = camelCase(`index-${resource}`)
+    const mutationInputName = capitalize(camelCase(`index-${resource}-input`))
+    // chunk the items in to ingestible size
+    const chunked = chunker(items, chunkSize)
     // return all of the remaining queries for concurrent processing
     try {
       const promises = chunked.map(chunk => {
         // create the GraphQL mutation
-        const query = dilithium.buildQuery('pim', 'products', chunk, 'indexProducts', 'IndexProductsInput')
+        const query = dilithium.buildQuery(type, resource, chunk, mutationName, mutationInputName)
         // save to Dilithium
         return dilithium.save(...query)
       })
@@ -92,5 +86,3 @@ const helper = {
   }
 
 }
-
-export default Machine(helper)
