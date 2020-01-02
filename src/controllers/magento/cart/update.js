@@ -1,4 +1,3 @@
-import Magento from '../../../services/magento'
 import updateGuestCart from '../../../helpers/magento/update-guest-cart'
 
 export default async (req, res) => {

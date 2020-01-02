@@ -1,6 +1,5 @@
-import Magento from '../../../services/magento'
 import generateGuestCart from '../../../helpers/magento/generate-guest-cart'
-import updateGuestCart from '../../../helpers/magento/add-items-to-cart'
+import updateGuestCart from '../../../helpers/magento/update-guest-cart'
 
 export default async (req, res) => {
 

@@ -7,5 +7,6 @@ export default {
   'POST /magento/index-content': 'magento/index/content',
   // Cart & Checkout Routes
   'POST /magento/cart': 'magento/cart/create',
-  'PUT /magento/cart/:id': 'magento/cart/update',
+  'GET /magento/cart/:id': 'magento/cart/find-one',
+  'PUT /magento/cart/:id': 'magento/cart/update'
 }
