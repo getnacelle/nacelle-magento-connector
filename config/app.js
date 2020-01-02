@@ -37,7 +37,7 @@ export default {
 
   security: {
     // define the options available
-    allowedRequestOptions: ['POST', 'GET'], // , 'PUT', 'DELETE'
+    allowedRequestOptions: ['POST', 'GET', 'PUT'], // , 'DELETE'
     allowOrigins: '*'
   },
   router: {
@@ -53,24 +53,5 @@ export default {
   dilithium: {
     host: DILITHIUM_HOST
   }
-
-  // use named stores
-  // stores: {
-  //   default: {
-  //     magento: {
-  //       host: MAGENTO_HOST,
-  //       token: MAGENTO_TOKEN
-  //     },
-  //     dilithium: {
-  //       host: DILITHIUM_HOST,
-  //       clientId: DILITHIUM_CLIENT_ID,
-  //       token: DILITHIUM_TOKEN,
-  //       syncSource: 'magento',
-  //       // defaults, magento connector overrides
-  //       locale: 'en-us',
-  //       currencyCode: 'USD'
-  //     }
-  //   }
-  // }
 
 }

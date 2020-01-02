@@ -6,3 +6,7 @@ export const buildMutation = (mutationName, inputType) => {
     }
   }`
 }
+
+export default {
+  buildMutation
+}

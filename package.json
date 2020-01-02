@@ -1,6 +1,6 @@
 {
   "name": "@nacelle/nacelle-magento-connector",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Nacelle connector for Magento Storefront",
   "main": "app.js",
   "repository": "git@github.com:getnacelle/nacelle-magento-connector.git",

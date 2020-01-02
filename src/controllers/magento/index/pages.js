@@ -1,4 +1,4 @@
-import { connector } from '../../../config/app'
+import { connector } from '../../../../config/app'
 
 export default async (req, res) => {
 
@@ -13,8 +13,8 @@ export default async (req, res) => {
       magentoToken
     } = req.validatedHeaders
 
-    // Schedule a jobe to run immediately to fetch the Magento Products concurrently
-    connector.jobs.schedule('fetch-products-magento', {
+    // Schedule a jobe to run immediately to fetch the Magento CMS Pages concurrently
+    connector.jobs.schedule('fetch-pages-magento', {
       magentoHost,
       magentoToken,
       orgId,

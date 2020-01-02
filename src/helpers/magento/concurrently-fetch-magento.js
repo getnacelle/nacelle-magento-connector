@@ -4,18 +4,13 @@ import appConfig, { connector } from '../../../config/app'
 
 import { slugify } from '../../utils/string-helpers'
 import { makeArray } from '../../utils/array-helpers'
-
-const actionMap = {
-  categories: 'getCategories',
-  pages: 'getPages',
-  products: 'getProducts'
-}
+import { actionMap } from '../../utils/magento-helpers'
 
 const helper = {
 
-  friendlyName: 'Fetch Products',
+  friendlyName: 'Concurrently Fetch Magento',
 
-  description: 'Fetch Products from Magento Store',
+  description: 'Concurrently Fetch Items from Magento store. This works only for API endpoints with search criteria',
 
   inputs: {
     host: {

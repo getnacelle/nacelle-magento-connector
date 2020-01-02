@@ -1,7 +1,18 @@
 import collectionNormalizer from '../normalizers/collection'
 import { slugify } from './string-helpers'
 
+const searchCriteriaMap = {
+  limit: 'page_size',
+  page: 'current_page'
+}
+
 export const IGNORE_CATEGORIES = ['Root Catalog', 'Default Category']
+
+export const actionMap = {
+  categories: 'getCategories',
+  pages: 'getPages',
+  products: 'getProducts'
+}
 
 /**
  * Group the Products by Category ID
@@ -60,4 +71,44 @@ export const bindCategoriesProducts = (categories, products, config) => {
       }
       return entity
     })
+}
+
+
+
+/**
+ * @method buildSearchParams
+ * @description build search params for query
+ *
+ * @param {object} params
+ *
+ * @return {object} - searchCriteria
+ */
+export const buildSearchParams = (params) => {
+  const mapped = Object.keys(params).reduce((output, key) => {
+    const param = searchCriteriaMap[key]
+    if (!param) {
+      throw new Error(`Invalid param ${param}`)
+    }
+    output[param] = params[key]
+    return output
+  }, {})
+
+  return {
+    searchCriteria: mapped
+  }
+
+  // TODO: add support for additional search params
+  // searchCriteria[filterGroups][0][filters][0][field]
+  // searchCriteria[filterGroups][0][filters][0][value]
+  // searchCriteria[filterGroups][0][filters][0][conditionType]
+  // searchCriteria[sortOrders][0][field]
+  // searchCriteria[sortOrders][0][direction]
+  // searchCriteria[pageSize]
+  // searchCriteria[currentPage]
+}
+
+export default {
+  groupProductsByCategoryId,
+  bindCategoriesProducts,
+  buildSearchParams
 }
