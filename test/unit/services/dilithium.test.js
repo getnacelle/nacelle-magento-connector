@@ -1,6 +1,14 @@
-import Dilithium from '../../../src/services/dilithium'
+import Dilithium from 'nacelle-connector/services/dilithium'
+import { buildMutation } from 'nacelle-connector/utils/dilithium-helpers'
 
 describe('Services / Dilithium Service', () => {
+
+  const mockMutation = `mutation indexProducts($input: IndexProductsInput!) {
+    indexProducts(input: $input) {
+      count
+      ids
+    }
+  }`
 
   describe('It creates a Dilithium Service', () => {
 
@@ -32,14 +40,8 @@ describe('Services / Dilithium Service', () => {
     })
 
     test('It created a Dilithium mutation', () => {
-      const mockMutation = `mutation indexProducts($input: IndexProductsInput!) {
-      indexProducts(input: $input) {
-        count
-        ids
-      }
-    }`
-      const mutation = dilithium.buildMutation('indexProducts', 'IndexProductsInput')
-      expect(mutation).toEqual(mockMutation)
+      const mutation = buildMutation('indexProducts', 'IndexProductsInput')
+      expect(JSON.stringify(mutation)).toEqual(JSON.stringify(mockMutation))
     })
     // const query = dilithium.buildQuery('pim', 'products', chunk, 'indexProducts', 'IndexProductsInput')
     // test('Dilithium create query', () => {

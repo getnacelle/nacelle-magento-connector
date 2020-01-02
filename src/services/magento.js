@@ -1,13 +1,10 @@
 import qs from 'querystrings'
 
-import config from '../../config/app'
+import appConfig from '../../config/app'
 import request from '../utils/request'
 import { slugify } from '../utils/string-helpers'
 
-const searchCriteriaMap = {
-  limit: 'page_size',
-  page: 'current_page'
-}
+import { buildSearchParams } from '../utils/magento-helpers'
 
 export default class Magento {
 
@@ -18,6 +15,11 @@ export default class Magento {
     this.host = host
     this.token = token
     this._secure = secure
+
+    this.services = {
+      customer: 'index.php',
+      admin: 'all'
+    }
 
     this.request = this.request.bind(this)
   }
@@ -56,18 +58,14 @@ export default class Magento {
    * @return {promise<object>} - default store
    */
   async getStoreConfig() {
-    try {
-      const [defaultStore] = await this.request('store/storeConfigs')
-      if (!defaultStore) {
-        throw new Error('Cannot find default store config')
-      }
-
-      this._storeConfig = defaultStore
-
-      return this.storeConfig
-    } catch (e) {
-      return Promise.reject(e)
+    const [defaultStore] = await this.request('store/storeConfigs')
+    if (!defaultStore) {
+      throw new Error('Cannot find default store config')
     }
+
+    this._storeConfig = defaultStore
+
+    return this.storeConfig
   }
 
   /**
@@ -78,14 +76,10 @@ export default class Magento {
    *
    * @return {promise<array>}
    */
-  async getCategories({ limit = config.app.request.limit, page = 1 }) {
+  async getCategories({ limit = appConfig.app.request.limit, page = 1 }) {
     const params = this.buildSearchParams({ limit, page })
 
-    try {
-      return await this.request('categories/list', params)
-    } catch (e) {
-      return Promise.reject(e)
-    }
+    return await this.request('categories/list', params)
   }
 
   /**
@@ -96,14 +90,14 @@ export default class Magento {
    *
    * @return {promise<object>} - { items, search_criteria, total_count }
    */
-  async getProducts({ limit = config.app.request.limit, page = 1 }) {
-    const params = this.buildSearchParams({ limit, page })
+  async getProducts({ limit = appConfig.app.request.limit, page = 1 }) {
+    const params = buildSearchParams({ limit, page })
 
-    try {
-      return await this.request('products', params)
-    } catch (e) {
-      return Promise.reject(e)
-    }
+    return await this.request('products', params)
+  }
+
+  async getProductBySku(sku) {
+    return await this.request(`products/${sku}`)
   }
 
   /**
@@ -117,11 +111,34 @@ export default class Magento {
   async getPages({ limit, page }) {
     const params = this.buildSearchParams({ limit, page })
 
-    try {
-      return await this.request('cmsPage/search', params)
-    } catch(e) {
-      return Promise.reject(e)
-    }
+    return await this.request('cmsPage/search', params)
+  }
+
+  async getGuestCart(quoteId) {
+    const url = `guest-carts/${quoteId}`;
+    return await this.request(url)
+  }
+
+  async createCartQuote() {
+    return await this.request('guest-carts', null, 'POST')
+  }
+
+  /**
+   * Create a new Cart Quote ID
+   * @return {string} Quote ID
+   */
+  async createCart() {
+    return await this.request('carts', null, 'POST')
+  }
+
+  async cartAddItem(cartId, item) {
+    const url = `guest-carts/${cartId}/items`;
+    return await this.request(url, item, 'POST')
+  }
+
+  async cartUpdateItem(cartId, itemId, item) {
+    const url = `carts/${cartId}/items/${itemId}`
+    return await this.request(url, item, 'PUT')
   }
 
   /**
@@ -133,44 +150,14 @@ export default class Magento {
    *
    * @return {promise<any>}
    */
-  async request(uri, params = {}) {
+  async request(uri, params = {}, method = 'GET') {
     let url = `${this.host}/${uri}`
 
-    if (Object.keys(params).length) {
+    if (method === 'GET' && Object.keys(params).length) {
       url += `?${qs.stringify(params)}`
     }
-    return await request(url, 'GET', {}, this.authHeader)
+    const queryParams = method === 'GET' ? {} : params
+    return await request(url, method, queryParams, this.authHeader)
   }
 
-  /**
-   * @method buildSearchParams
-   * @description build search params for query
-   *
-   * @param {object} params
-   *
-   * @return {object} - searchCriteria
-   */
-  buildSearchParams(params) {
-    const mapped = Object.keys(params).reduce((output, key) => {
-      const param = searchCriteriaMap[key]
-      if (!param) {
-        throw new Error(`Invalid param ${param}`)
-      }
-      output[param] = params[key]
-      return output
-    }, {})
-
-    return {
-      searchCriteria: mapped
-    }
-
-    // TODO: add support for additional search params
-    // searchCriteria[filterGroups][0][filters][0][field]
-    // searchCriteria[filterGroups][0][filters][0][value]
-    // searchCriteria[filterGroups][0][filters][0][conditionType]
-    // searchCriteria[sortOrders][0][field]
-    // searchCriteria[sortOrders][0][direction]
-    // searchCriteria[pageSize]
-    // searchCriteria[currentPage]
-  }
 }

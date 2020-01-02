@@ -1,4 +1,4 @@
-import { connector } from '../../../config/app'
+import { connector } from '../../../../config/app'
 
 export default async (req, res) => {
 
