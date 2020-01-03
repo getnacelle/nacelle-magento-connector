@@ -39,7 +39,7 @@ export default class Magento {
   }
 
   get storeConfig() {
-    if(this._configuredStore) {
+    if (this._configuredStore) {
       return this._configuredStore
     }
     return this._configuredStore = {
@@ -114,11 +114,20 @@ export default class Magento {
     return await this.request('cmsPage/search', params)
   }
 
+  /**
+   * Get Guest Cart by Quote ID
+   * @param {string} quoteId
+   * @return {Cart}
+   */
   async getGuestCart(quoteId) {
     const url = `guest-carts/${quoteId}`;
     return await this.request(url)
   }
 
+  /**
+   * Create a new Guest Cart Quote ID
+   * @return {string} Quote ID
+   */
   async createCartQuote() {
     return await this.request('guest-carts', null, 'POST')
   }
@@ -131,14 +140,38 @@ export default class Magento {
     return await this.request('carts', null, 'POST')
   }
 
+  /**
+   * Add Item to Cart
+   * @param {number} cartId
+   * @param {}
+   * @return {string} Quote ID
+   */
   async cartAddItem(cartId, item) {
     const url = `guest-carts/${cartId}/items`;
     return await this.request(url, item, 'POST')
   }
 
+  /**
+   * Update an Item in a Cart
+   * @param {number} cartId
+   * @param {number} itemId
+   * @param {object} item
+   * @return {string} Quote ID
+   */
   async cartUpdateItem(cartId, itemId, item) {
     const url = `carts/${cartId}/items/${itemId}`
     return await this.request(url, item, 'PUT')
+  }
+
+  /**
+   * Remove an Item from a Cart
+   * @param {number} cartId
+   * @param {number} itemId
+   * @return {boolean}
+   */
+  async cartRemoveItem(cartId, itemId) {
+    const url = `carts/${cartId}/items/${itemId}`
+    return await this.request(url, null, 'DELETE')
   }
 
   /**
