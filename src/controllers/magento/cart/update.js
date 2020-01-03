@@ -2,7 +2,7 @@ import updateGuestCart from '../../../helpers/magento/update-guest-cart'
 
 export default async (req, res) => {
 
-  const { id: quoteId, items } = req.allParams()
+  const { cartId, items } = req.allParams()
 
   const {
     sourceDomain,
@@ -12,14 +12,14 @@ export default async (req, res) => {
     magentoToken
   } = req.validatedHeaders
 
-  if (!quoteId || typeof quoteId !== 'string' || !items || !items.length) {
+  if (!cartId || typeof cartId !== 'string' || !items || !items.length) {
     return res.status(400).send('Bad Request')
   }
 
   try {
-    const results = await updateGuestCart({ host: magentoHost, token: magentoToken, quoteId, items })
+    const results = await updateGuestCart({ host: magentoHost, token: magentoToken, cartId, items })
 
-    return res.status(200).send({ cartId: quoteId, items: results })
+    return res.status(200).send(results)
   } catch (e) {
     return res.status(400).send(e)
   }

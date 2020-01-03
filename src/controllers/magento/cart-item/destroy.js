@@ -1,9 +1,8 @@
 import Magento from '../../../services/magento'
-import cartRemoveItem from '../../../helpers/magento/cart-remove-item'
 
 export default async (req, res) => {
 
-  const { id: quoteId, itemId } = req.allParams()
+  const { cartId, itemId } = req.allParams()
 
   const {
     magentoHost,
@@ -11,7 +10,8 @@ export default async (req, res) => {
   } = req.validatedHeaders
 
   try {
-    const result = await cartRemoveItem({ host: magentoHost, token: magentoToken, quoteId, itemId })
+    const magento = new Magento(magentoHost, magentoToken)
+    const result = await magento.cartRemoveItem(cartId, itemId)
 
     return res.status(200).send(result)
   } catch (e) {

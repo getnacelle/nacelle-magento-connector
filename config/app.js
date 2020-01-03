@@ -37,7 +37,7 @@ export default {
 
   security: {
     // define the options available
-    allowedRequestOptions: ['POST', 'GET', 'PUT'], // , 'DELETE'
+    allowedRequestOptions: ['POST', 'GET', 'PUT', 'DELETE'],
     allowOrigins: '*'
   },
   router: {

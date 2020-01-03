@@ -1,4 +1,4 @@
-import generateGuestCart from '../../../helpers/magento/generate-guest-cart'
+import Magento from '../../../services/magento'
 import updateGuestCart from '../../../helpers/magento/update-guest-cart'
 
 export default async (req, res) => {
@@ -10,16 +10,15 @@ export default async (req, res) => {
     magentoToken
   } = req.validatedHeaders
 
-  if (!items || !items.length) {
-    return res.status(400).send('Bad Request')
-  }
-
   try {
+    const magento = new Magento(magentoHost, magentoToken)
 
-    const { quoteId } = await generateGuestCart({ host: magentoHost, token: magentoToken })
-    const results = await updateGuestCart({ host: magentoHost, token: magentoToken, quoteId, items })
+    const cartId = await magento.createCart()
+    if(items && items.length) {
+      await updateGuestCart({ host: magentoHost, token: magentoToken, cartId, items })
+    }
 
-    return res.status(200).send({ cartId: quoteId, items: results })
+    return res.status(201).send(cartId)
   } catch (e) {
     console.log(e)
     return res.status(400).send(e)

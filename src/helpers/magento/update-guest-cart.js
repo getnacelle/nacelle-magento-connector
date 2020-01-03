@@ -19,7 +19,7 @@ const helper = {
       description: 'Magento access token',
       required: true
     },
-    quoteId: {
+    cartId: {
       type: 'string',
       description: 'Cart Quote ID',
       required: true
@@ -37,12 +37,12 @@ const helper = {
     }
   },
 
-  async fn({ host, token, quoteId, items }, exits) {
+  async fn({ host, token, cartId, items }, exits) {
     const magento = new Magento(host, token)
 
     try {
 
-      const cart = await magento.getGuestCart(quoteId)
+      const cart = await magento.getCart(cartId)
 
       const promises = items.map(item => {
         const inCartItem = cart.items.find(x => x.sku === item.sku)
@@ -51,19 +51,21 @@ const helper = {
             cart_item: {
               item_id: inCartItem.item_id,
               qty: item.qty,
-              quote_id: cart.id
+              quote_id: cartId
             }
           }
-          return magento.cartUpdateItem(cart.id, inCartItem.item_id, update)
+          return magento.cartUpdateItem(cartId, inCartItem.item_id, update)
+          // return update
         }
-        item.quoteId = quoteId
-        return magento.cartAddItem(cart.id, { cart_item: item })
+        item.quote_id = cartId
+        // return item
+        return magento.cartAddItem(cartId, { cart_item: item })
       })
 
       const results = await Promise.all(promises)
-      const updatedCart = await magento.getGuestCart(quoteId)
+      const updatedCart = await magento.getCart(cartId)
 
-      return exits.success(updatedCart.items)
+      return await exits.success(updatedCart.items)
     } catch (e) {
       console.log(e)
       return exits.error(new Error(e))
