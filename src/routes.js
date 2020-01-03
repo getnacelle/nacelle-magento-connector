@@ -8,5 +8,6 @@ export default {
   // Cart & Checkout Routes
   'POST /magento/cart': 'magento/cart/create',
   'GET /magento/cart/:id': 'magento/cart/find-one',
-  'PUT /magento/cart/:id': 'magento/cart/update'
+  'PUT /magento/cart/:id': 'magento/cart/update',
+  'DELETE /magento/cart/:id/items/:itemId': 'magento/cart-item/destroy'
 }
