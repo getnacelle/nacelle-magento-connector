@@ -9,13 +9,9 @@ export default async (req, res) => {
     magentoToken
   } = req.validatedHeaders
 
-  if (!cartId || typeof cartId !== 'string') {
-    return res.status(400).send('Bad Request')
-  }
-
   try {
     const magento = new Magento(magentoHost, magentoToken)
-    const results = await magento.getCart(cartId)
+    const results = await magento.getPaymentMethods(cartId)
 
     return res.status(200).send(results)
   } catch (e) {

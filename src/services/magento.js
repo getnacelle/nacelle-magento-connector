@@ -15,11 +15,8 @@ export default class Magento {
     this.host = host
     this.token = token
     this._secure = secure
-
-    this.services = {
-      customer: 'index.php',
-      admin: 'all'
-    }
+    // defaults to true
+    this.isGuest = true
 
     this.request = this.request.bind(this)
   }
@@ -51,11 +48,13 @@ export default class Magento {
     }
   }
 
+  get cartType() {
+    return this.isGuest ? 'guest-carts' : 'carts'
+  }
+
   /**
-   * @method getStoreConfig
-   * @description load Magento store config
-   *
-   * @return {promise<object>} - default store
+   * Get the Store Config
+   * @return {object} - default store
    */
   async getStoreConfig() {
     const [defaultStore] = await this.request('store/storeConfigs')
@@ -69,11 +68,8 @@ export default class Magento {
   }
 
   /**
-   * @method getCollections
-   * @description get Magento collections
-   *
+   * Get Store Categories
    * @param {object} options
-   *
    * @return {promise<array>}
    */
   async getCategories({ limit = appConfig.app.request.limit, page = 1 }) {
@@ -83,12 +79,9 @@ export default class Magento {
   }
 
   /**
-   * @method getProducts
-   * @description get products
-   *
+   * Get Store Products
    * @param {object} options
-   *
-   * @return {promise<object>} - { items, search_criteria, total_count }
+   * @return {object} - { items, search_criteria, total_count }
    */
   async getProducts({ limit = appConfig.app.request.limit, page = 1 }) {
     const params = buildSearchParams({ limit, page })
@@ -96,17 +89,19 @@ export default class Magento {
     return await this.request('products', params)
   }
 
+  /**
+   * Get a Product by SKU
+   * @param {string} sku
+   * @return {Product}
+   */
   async getProductBySku(sku) {
     return await this.request(`products/${sku}`)
   }
 
   /**
-   * @method getPages
-   * @description get pages
-   *
+   * Get Store Pages
    * @param {object} options
-   *
-   * @return {promise<object>} - { items, search_criteria, total_count }
+   * @return {object} - { items, search_criteria, total_count }
    */
   async getPages({ limit, page }) {
     const params = this.buildSearchParams({ limit, page })
@@ -116,62 +111,168 @@ export default class Magento {
 
   /**
    * Get Guest Cart by Quote ID
-   * @param {string} quoteId
+   * @param {string|number} cartId
    * @return {Cart}
    */
-  async getGuestCart(quoteId) {
-    const url = `guest-carts/${quoteId}`;
+  async getCart(cartId) {
+    const url = `${this.cartType}/${cartId}`
     return await this.request(url)
   }
 
   /**
-   * Create a new Guest Cart Quote ID
-   * @return {string} Quote ID
-   */
-  async createCartQuote() {
-    return await this.request('guest-carts', null, 'POST')
-  }
-
-  /**
-   * Create a new Cart Quote ID
-   * @return {string} Quote ID
+   * Create a new Cart
+   * @return {string} Cart ID
    */
   async createCart() {
-    return await this.request('carts', null, 'POST')
+    return await this.request(this.cartType, null, 'POST')
   }
 
   /**
    * Add Item to Cart
-   * @param {number} cartId
-   * @param {}
+   * @param {string|number} cartId
+   * @param {object} item
    * @return {string} Quote ID
    */
   async cartAddItem(cartId, item) {
-    const url = `guest-carts/${cartId}/items`;
+    const url = `${this.cartType}/${cartId}/items`;
     return await this.request(url, item, 'POST')
   }
 
   /**
    * Update an Item in a Cart
-   * @param {number} cartId
+   * @param {string|number} cartId
    * @param {number} itemId
    * @param {object} item
    * @return {string} Quote ID
    */
   async cartUpdateItem(cartId, itemId, item) {
-    const url = `carts/${cartId}/items/${itemId}`
+    const url = `${this.cartType}/${cartId}/items/${itemId}`
     return await this.request(url, item, 'PUT')
   }
 
   /**
    * Remove an Item from a Cart
-   * @param {number} cartId
+   * @param {string|number} cartId
    * @param {number} itemId
    * @return {boolean}
    */
   async cartRemoveItem(cartId, itemId) {
-    const url = `carts/${cartId}/items/${itemId}`
+    const url = `${this.cartType}/${cartId}/items/${itemId}`
     return await this.request(url, null, 'DELETE')
+  }
+
+  /**
+   * Get available payment Options for Cart
+   * @param {string|number} cartId
+   * @return {array} payment options
+   * ex:
+   * [{
+   *   "code": "checkmo",
+   *   "title": "Check / Money order"
+   *  }]
+   */
+  async getPaymentMethods(cartId) {
+    const url = `${this.cartType}/${cartId}/payment-methods`
+    return await this.request(url)
+  }
+
+  /**
+   * Set the Payment Method for the Cart
+   * @param {string|number} cartId
+   * @param {string} method String code for method
+   * @return {string} order no
+   * ex: "1"
+   */
+  async setPaymentMethod(cartId, method) {
+    const url = `${this.cartType}/${cartId}/selected-payment-method`
+    return await this.request(url, { method: { method } }, 'PUT')
+  }
+
+  /**
+   * Set the Billing Address for the Cart
+   * @param {string|number} cartId
+   * @param {object} address Magento Address Model
+   * @return {string} addressId
+   * ex: "127"
+   */
+  async setCartBillingAddress(cartId, address) {
+    const url = `${this.cartType}/${cartId}/billing-address`
+    return await this.request(url, address, 'POST')
+  }
+
+  /**
+   * Set the Shipping Info for the Cart
+   * @param {string|number} cartId
+   * @param {object} data Magento { addressInformation: { shipping_address: address } }
+   */
+  async setCartShippingInfo(cartId, addressInformation) {
+    const url = `${this.cartType}/${cartId}/shipping-information`
+    return await this.request(url, { addressInformation }, 'POST')
+  }
+
+  /**
+   * Create a new Order for the Cart
+   * @param {string|number} cartId
+   * @param {object} paymentInfo
+   * @return {string} orderId
+   */
+  async createOrder(cartId, paymentInfo) {
+    const url = `${this.cartType}/${cartId}/payment-information`
+    return await this.request(url, paymentInfo, 'POST')
+  }
+
+  /**
+   * Get an Order by ID
+   * @param {number} orderId
+   * @return {Order}
+   */
+  async getOrder(orderId) {
+    const url = `orders/${orderId}`
+    return await this.request(url)
+  }
+
+  /**
+   * Get the Shipping Methods available to Cart
+   * @param {number} cartId
+   * @param {object} address Magento Address Model
+   * @return {array} A list of available shipping methods
+   * ex:
+   * [
+   *   {
+   *       "carrier_code": "flatrate",
+   *       "method_code": "flatrate",
+   *       "carrier_title": "Flat Rate",
+   *       "method_title": "Fixed",
+   *       "amount": 15,
+   *       "base_amount": 15,
+   *       "available": true,
+   *       "error_message": "",
+   *       "price_excl_tax": 15,
+   *       "price_incl_tax": 15
+   *   }
+   * ]
+   */
+  async estimateShippingMethods(cartId, address) {
+    const url = `${this.cartType}/${cartId}/estimate-shipping-methods`
+    return await this.request(url, { address }, 'POST')
+  }
+
+  /**
+   * Get country info by Country Code
+   * @param {string} countryCode
+   * @return {object}
+   */
+  async getCountryByCode(countryCode) {
+    const url = `directory/countries/${countryCode}`
+    return await this.request(url)
+  }
+
+  /**
+   * Get Countries List
+   * @return {array}
+   */
+  async getAllCountries() {
+    return await this.request('directory/countries')
   }
 
   /**
