@@ -1,12 +1,11 @@
 import Machine from 'machine'
 import Magento from '../../services/magento'
-import appConfig, { connector } from '../../../config/app'
 
 const helper = {
 
   friendlyName: 'Update Cart Items',
 
-  description: 'Update Items in Magento Cart',
+  description: 'Update Items in Magento Cart, this will add, update, or remove items',
 
   inputs: {
     host: {
@@ -43,8 +42,16 @@ const helper = {
     try {
 
       const cart = await magento.getCart(cartId)
-
-      const promises = items.map(item => {
+      // start with removing the items that do not exist in the request
+      const promises = cart.items.reduce((output, item) => {
+        const found = items.find(x => x.sku === item.sku)
+        if(!found) {
+          output.push(magento.cartRemoveItem(cartId, item.item_id))
+        }
+        return output
+      }, [])
+      // now determine if they're new or update
+      promises.push(...items.reduce((output, item) => {
         const inCartItem = cart.items.find(x => x.sku === item.sku)
         if (inCartItem) {
           const update = {
@@ -54,20 +61,22 @@ const helper = {
               quote_id: cartId
             }
           }
-          return magento.cartUpdateItem(cartId, inCartItem.item_id, update)
-          // return update
+          if(item.qty !== inCartItem.qty) {
+            output.push(magento.cartUpdateItem(cartId, inCartItem.item_id, update))
+          }
+        } else {
+          item.quote_id = cartId
+          output.push(magento.cartAddItem(cartId, { cart_item: item }))
         }
-        item.quote_id = cartId
-        // return item
-        return magento.cartAddItem(cartId, { cart_item: item })
-      })
+
+        return output
+      }, []))
 
       const results = await Promise.all(promises)
       const updatedCart = await magento.getCart(cartId)
 
       return await exits.success(updatedCart.items)
     } catch (e) {
-      console.log(e)
       return exits.error(new Error(e))
     }
   }

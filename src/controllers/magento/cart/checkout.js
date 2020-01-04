@@ -2,16 +2,16 @@ import Magento from '../../../services/magento'
 
 export default async (req, res) => {
 
-  const { orderId } = req.params
+  const { cartId } = req.params
 
   const {
     magentoHost,
     magentoToken
-  } = req.validatedHeaders
+  } = req.getValidatedHeaders()
 
   try {
     const magento = new Magento(magentoHost, magentoToken)
-    const results = await magento.getOrder(orderId)
+    const results = await magento.createOrder(cartId, req.body)
 
     return res.status(200).send(results)
   } catch (e) {

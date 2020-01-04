@@ -2,7 +2,7 @@ import Magento from '../services/magento'
 import { connector } from '../../config/app'
 
 import normalizer from '../normalizers/page'
-import helper from '../helpers/magento/concurrently-fetch-magento'
+import fetchMagento from '../helpers/magento/concurrently-fetch-magento'
 
 export default {
 
@@ -69,7 +69,7 @@ export default {
       // these will run concurrently
       const promises = [
         magento.getStoreConfig(secure),
-        helper({ host: magento.host, token: magento.token, type: 'pages', limit })
+        fetchMagento({ host: magento.host, token: magento.token, type: 'pages', limit })
       ]
       // assign store config and products response
       const [storeConfig, pages] = await Promise.all(promises)

@@ -1,7 +1,6 @@
 import Dilithium from '../services/dilithium'
-import appConfig, { connector } from '../../config/app'
 
-import { slugify, camelCase, capitalize } from '../utils/string-helpers'
+import { camelCase, capitalize } from '../utils/string-helpers'
 import normalizer from '../normalizers/product'
 import { chunk as chunker } from 'lodash'
 

@@ -1,20 +1,66 @@
+const gobalRequiredHeaders = [
+  'magento-host',
+  'magento-token'
+]
+const indexingHeaders = [
+  ...gobalRequiredHeaders,
+  'org-token',
+  'org-id',
+  'source-domain'
+]
+
 export default {
   // Indexing Routes
-  'POST /magento/index-products': 'magento/index/products',
-  'POST /magento/index-collections': 'magento/index/collections',
-  // @deprecated use /index-content pass body param 'pages'
-  'POST /magento/index-pages': 'magento/index/pages',
-  'POST /magento/index-content': 'magento/index/content',
+  'POST /magento/index-products': {
+    controller: 'magento/index/products',
+    requiredHeaders: indexingHeaders
+  },
+  'POST /magento/index-collections': {
+    controller: 'magento/index/collections',
+    requiredHeaders: indexingHeaders
+  },
+  // @deprecated will remove 0.1.0 use /index-content pass body param 'pages'
+  'POST /magento/index-pages': {
+    controller: 'magento/index/pages',
+    requiredHeaders: indexingHeaders
+  },
+  'POST /magento/index-content': {
+    controller: 'magento/index/content',
+    requiredHeaders: indexingHeaders
+  },
   // Cart
-  'POST /magento/cart': 'magento/cart/create',
-  'GET /magento/cart/:cartId': 'magento/cart/find-one',
-  'PUT /magento/cart/:cartId': 'magento/cart/update',
-  'DELETE /magento/cart/:cartId/items/:itemId': 'magento/cart-item/destroy',
-  'GET /magento/cart/:cartId/payment-methods': 'magento/cart/payment-methods',
-  'POST /magento/cart/:cartId/shipping-methods': 'magento/cart/shipping-methods',
-  'POST /magento/cart/:cartId/shipping-info': 'magento/cart/shipping-info',
+  'POST /magento/cart': {
+    controller: 'magento/cart/create',
+    requiredHeaders: gobalRequiredHeaders
+  },
+  'GET /magento/cart/:cartId': {
+    controller: 'magento/cart/find-one',
+    requiredHeaders: gobalRequiredHeaders
+  },
+  'PUT /magento/cart/:cartId': {
+    controller: 'magento/cart/update',
+    requiredHeaders: gobalRequiredHeaders
+  },
+  'GET /magento/cart/:cartId/payment-methods': {
+    controller: 'magento/cart/payment-methods',
+    requiredHeaders: gobalRequiredHeaders
+  },
+  'POST /magento/cart/:cartId/shipping-methods': {
+    controller: 'magento/cart/shipping-methods',
+    requiredHeaders: gobalRequiredHeaders
+  },
+  'POST /magento/cart/:cartId/total': {
+    controller: 'magento/cart/total',
+    requiredHeaders: gobalRequiredHeaders
+  },
   // Checkout
-  'POST /magento/checkout/:cartId': 'magento/checkout',
+  'POST /magento/checkout/:cartId': {
+    controller: 'magento/cart/checkout',
+    requiredHeaders: gobalRequiredHeaders
+  },
   // Orders
-  'GET /magento/orders/:orderId': 'magento/order'
+  'GET /magento/orders/:orderId': {
+    controller: 'magento/order/find-one',
+    requiredHeaders: gobalRequiredHeaders
+  }
 }

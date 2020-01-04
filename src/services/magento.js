@@ -61,20 +61,17 @@ export default class Magento {
     if (!defaultStore) {
       throw new Error('Cannot find default store config')
     }
-
     this._storeConfig = defaultStore
-
     return this.storeConfig
   }
 
   /**
    * Get Store Categories
    * @param {object} options
-   * @return {promise<array>}
+   * @return {array}
    */
   async getCategories({ limit = appConfig.app.request.limit, page = 1 }) {
     const params = this.buildSearchParams({ limit, page })
-
     return await this.request('categories/list', params)
   }
 
@@ -85,7 +82,6 @@ export default class Magento {
    */
   async getProducts({ limit = appConfig.app.request.limit, page = 1 }) {
     const params = buildSearchParams({ limit, page })
-
     return await this.request('products', params)
   }
 
@@ -105,7 +101,6 @@ export default class Magento {
    */
   async getPages({ limit, page }) {
     const params = this.buildSearchParams({ limit, page })
-
     return await this.request('cmsPage/search', params)
   }
 
@@ -177,37 +172,13 @@ export default class Magento {
   }
 
   /**
-   * Set the Payment Method for the Cart
-   * @param {string|number} cartId
-   * @param {string} method String code for method
-   * @return {string} order no
-   * ex: "1"
-   */
-  async setPaymentMethod(cartId, method) {
-    const url = `${this.cartType}/${cartId}/selected-payment-method`
-    return await this.request(url, { method: { method } }, 'PUT')
-  }
-
-  /**
-   * Set the Billing Address for the Cart
-   * @param {string|number} cartId
-   * @param {object} address Magento Address Model
-   * @return {string} addressId
-   * ex: "127"
-   */
-  async setCartBillingAddress(cartId, address) {
-    const url = `${this.cartType}/${cartId}/billing-address`
-    return await this.request(url, address, 'POST')
-  }
-
-  /**
    * Set the Shipping Info for the Cart
    * @param {string|number} cartId
    * @param {object} data Magento { addressInformation: { shipping_address: address } }
    */
-  async setCartShippingInfo(cartId, addressInformation) {
+  async setCartInfo(cartId, info) {
     const url = `${this.cartType}/${cartId}/shipping-information`
-    return await this.request(url, { addressInformation }, 'POST')
+    return await this.request(url, info, 'POST')
   }
 
   /**
@@ -252,7 +223,7 @@ export default class Magento {
    *   }
    * ]
    */
-  async estimateShippingMethods(cartId, address) {
+  async getShippingMethodsByAddress(cartId, address) {
     const url = `${this.cartType}/${cartId}/estimate-shipping-methods`
     return await this.request(url, { address }, 'POST')
   }
@@ -276,12 +247,10 @@ export default class Magento {
   }
 
   /**
-   * @method request
-   * @description ajax helper via axios
-   *
+   * Ajax request helper for Magento
+   * @description ajax helper via axios, formats params for Magento
    * @param {string} uri
    * @param {object} params
-   *
    * @return {promise<any>}
    */
   async request(uri, params = {}, method = 'GET') {
