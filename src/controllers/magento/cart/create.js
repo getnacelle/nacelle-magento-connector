@@ -8,13 +8,14 @@ export default async (req, res) => {
   const {
     magentoHost,
     magentoToken
-  } = req.validatedHeaders
+  } = req.getValidatedHeaders()
 
   try {
     const magento = new Magento(magentoHost, magentoToken)
 
     const cartId = await magento.createCart()
     if(items && items.length) {
+      // if items are passed add them to the cart
       await updateGuestCart({ host: magentoHost, token: magentoToken, cartId, items })
     }
 

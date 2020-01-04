@@ -7,11 +7,11 @@ export default async (req, res) => {
   const {
     magentoHost,
     magentoToken
-  } = req.validatedHeaders
+  } = req.getValidatedHeaders()
 
   try {
     const magento = new Magento(magentoHost, magentoToken)
-    const results = await magento.estimateShippingMethods(cartId, address)
+    const results = await magento.getShippingMethodsByAddress(cartId, address)
 
     return res.status(200).send(results)
   } catch (e) {

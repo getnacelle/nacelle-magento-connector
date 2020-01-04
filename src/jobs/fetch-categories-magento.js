@@ -2,7 +2,7 @@ import Magento from '../services/magento'
 import { connector } from '../../config/app'
 
 import { bindCategoriesProducts } from '../utils/magento-helpers'
-import helper from '../helpers/magento/concurrently-fetch-magento'
+import fetchMagento from '../helpers/magento/concurrently-fetch-magento'
 
 export default {
 
@@ -69,8 +69,8 @@ export default {
       // these will run concurrently
       const promises = [
         magento.getStoreConfig(secure),
-        helper({ host: magento.host, token: magento.token, type: 'categories', limit }),
-        helper({ host: magento.host, token: magento.token, type: 'products', limit })
+        fetchMagento({ host: magento.host, token: magento.token, type: 'categories', limit }),
+        fetchMagento({ host: magento.host, token: magento.token, type: 'products', limit })
       ]
       // assign store config and products response
       const [ storeConfig, categories, products] = await Promise.all(promises)

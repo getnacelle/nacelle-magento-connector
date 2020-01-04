@@ -7,7 +7,7 @@ export default async (req, res) => {
   const {
     magentoHost,
     magentoToken
-  } = req.validatedHeaders
+  } = req.getValidatedHeaders()
 
   try {
     const magento = new Magento(magentoHost, magentoToken)

@@ -42,7 +42,12 @@ export default (req, res, next) => {
     })
   }
   // add the validated headers to the req object
+  // @deprecated will remove v 0.1.0. Use req.getValidatedHeaders()
   req.validatedHeaders = validHeaders
+  // make the valid headers available via request instead of implied
+  req.getValidatedHeaders = () => {
+    return validHeaders
+  }
 
   return next()
 }

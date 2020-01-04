@@ -11,7 +11,7 @@ export default async (req, res) => {
       orgToken,
       magentoHost,
       magentoToken
-    } = req.validatedHeaders
+    } = req.getValidatedHeaders()
 
     // Schedule a jobe to run immediately to fetch the Magento Products concurrently
     connector.jobs.schedule('fetch-products-magento', {

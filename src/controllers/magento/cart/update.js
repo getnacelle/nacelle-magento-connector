@@ -10,7 +10,7 @@ export default async (req, res) => {
     orgToken,
     magentoHost,
     magentoToken
-  } = req.validatedHeaders
+  } = req.getValidatedHeaders()
 
   if (!cartId || typeof cartId !== 'string' || !items || !items.length) {
     return res.status(400).send('Bad Request')

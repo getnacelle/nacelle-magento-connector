@@ -2,7 +2,7 @@ import Magento from '../services/magento'
 import { connector } from '../../config/app'
 
 import normalizer from '../normalizers/product'
-import helper from '../helpers/magento/concurrently-fetch-magento'
+import fetchMagento from '../helpers/magento/concurrently-fetch-magento'
 
 export default {
 
@@ -69,12 +69,16 @@ export default {
       // these will run concurrently
       const promises = [
         magento.getStoreConfig(secure),
-        helper({ host: magento.host, token: magento.token, type: 'products', limit })
+        fetchMagento({ host: magento.host, token: magento.token, type: 'products', limit })
       ]
       // assign store config and products response
       const [storeConfig, products] = await Promise.all(promises)
 
-      const items = products.map(product => normalizer(product, { staticUrl: storeConfig.staticUrl, locale: storeConfig.locale, currencyCode: storeConfig.currencyCode }))
+      const items = products.map(product => normalizer(product, {
+        staticUrl: storeConfig.staticUrl,
+        locale: storeConfig.locale,
+        currencyCode: storeConfig.currencyCode
+      }))
 
       // offload the dilithium push to the jobs queue
       connector.jobs.schedule('push-dilithium', {

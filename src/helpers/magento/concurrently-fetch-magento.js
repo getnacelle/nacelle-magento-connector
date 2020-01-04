@@ -1,8 +1,6 @@
 import Machine from 'machine'
 import Magento from '../../services/magento'
-import appConfig, { connector } from '../../../config/app'
 
-import { slugify } from '../../utils/string-helpers'
 import { makeArray } from '../../utils/array-helpers'
 import { actionMap } from '../../utils/magento-helpers'
 
