@@ -72,7 +72,7 @@ const helper = {
         return output
       }, []))
 
-      const results = await Promise.all(promises)
+      await Promise.all(promises)
       const updatedCart = await magento.getCart(cartId)
 
       return await exits.success(updatedCart.items)

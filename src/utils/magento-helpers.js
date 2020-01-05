@@ -40,7 +40,7 @@ export const groupProductsByCategoryId = (products) => {
 /**
  * Ignore specific categories from being processed
  * @param {array} categories
- * @param {...string} ignore The names of the categories to ignore
+ * @param {...string[]} ignore The names of the categories to ignore
  */
 const ignoreCategories = (categories, ...ignore) => {
   return ignore.length ? categories.filter(x => ignore.indexOf(x.name) === -1) : categories
@@ -72,8 +72,6 @@ export const bindCategoriesProducts = (categories, products, config) => {
       return entity
     })
 }
-
-
 
 /**
  * @method buildSearchParams

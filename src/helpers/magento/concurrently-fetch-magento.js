@@ -64,7 +64,7 @@ const helper = {
       if (pager.current_page < totalPages) {
         // create an array to map the remaining requests
         const pending = makeArray(totalPages - 1)
-        // the promises to run concurrently
+        // the promises to run concurrently, offset by 2 to account for 0 based index
         const promises = pending.map(idx => action({ limit, page: idx + 2 }))
         // request remaining pages concurrently
         const results = await Promise.all(promises)

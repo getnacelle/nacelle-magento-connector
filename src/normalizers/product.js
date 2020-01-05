@@ -1,5 +1,4 @@
 import { slugify } from '../utils/string-helpers'
-import { stripNullEmpty } from '../utils/object-helpers'
 import { getSeconds } from '../utils/date-helpers'
 import { getAttribute } from '../utils/normalizer-helpers'
 

@@ -3,18 +3,18 @@ import updateGuestCart from '../../../helpers/magento/update-guest-cart'
 
 export default async (req, res) => {
 
-  const { items } = req.body
-
-  const {
-    magentoHost,
-    magentoToken
-  } = req.getValidatedHeaders()
-
   try {
+    const { items } = req.allParams()
+
+    const {
+      magentoHost,
+      magentoToken
+    } = req.getValidatedHeaders()
+
     const magento = new Magento(magentoHost, magentoToken)
 
     const cartId = await magento.createCart()
-    if(items && items.length) {
+    if (items && items.length) {
       // if items are passed add them to the cart
       await updateGuestCart({ host: magentoHost, token: magentoToken, cartId, items })
     }

@@ -25,3 +25,32 @@ export default async (url, method, params, headers) => {
   }
 
 }
+
+export const requireParams = (req, ...required) => {
+  const reqParams = req.allParams()
+
+  const missingParams = required.reduce((missing, param) => {
+    if(typeof param === 'string') {
+      if(!reqParams.hasOwnProperty(param)) {
+        missing.push(param)
+      }
+    } else if(Array.isArray(param)) {
+      if (type === 'array') {
+        if(!reqParams.hasOwnProperty(_param) || !Array.isArray(reqParams[_param]) || !reqParams[_param].length) {
+          missing.push(param)
+        }
+      } else {
+        if (!reqParams.hasOwnProperty(_param) || typeof _param !== type) {
+          missing.push(param)
+        }
+      }
+    }
+    return missing
+  }, [])
+
+  if(missingParams.length) {
+    const missingOutput = missingParams.join(', ')
+    throw new Error(`Invalid Param ${missingOutput}`)
+  }
+
+}
