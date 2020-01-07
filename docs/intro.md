@@ -162,6 +162,26 @@ $ npm run start
 
 ### Run in Development
 
+#### Configure Host file
+
+Add `local.magento` domain to your local `host` file
+```
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1       localhost
+255.255.255.255 broadcasthost
+::1             localhost
+
+#### Magento Local
+127.0.0.1 local.magento
+```
+
+#### Update docker-compose.yml file
+
 To run the Connector in development and watch for changed files. Uncomment the `volumes` config in the `docker-compose.yml` under `connector` service
 
 ```
