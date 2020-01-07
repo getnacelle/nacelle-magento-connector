@@ -114,6 +114,39 @@ $ yarn install
 $ npm install
 ```
 
+### Environment variables
+
+Change the `default.env` file to `.env`
+
+Configure as desired
+
+`.env`
+```bash
+PORT=3000
+
+DILITHIUM_HOST=http://index-dilithium-staging.us-east-1.elasticbeanstalk.com/
+
+MYSQL_HOST=db
+MYSQL_ROOT_PASSWORD=m5AzzFeRmb66Z7X
+MYSQL_USER=nacelle_admin
+MYSQL_PASSWORD=nacelle_demo
+MYSQL_DATABASE=nacelle
+
+MAGENTO_LANGUAGE=en_US
+MAGENTO_TIMEZONE=America/Los_Angeles
+MAGENTO_DEFAULT_CURRENCY=USD
+MAGENTO_URL=http://local.magento
+MAGENTO_BACKEND_FRONTNAME=admin
+MAGENTO_USE_SECURE=0
+MAGENTO_BASE_URL_SECURE=0
+MAGENTO_USE_SECURE_ADMIN=0
+
+MAGENTO_ADMIN_FIRSTNAME=Deanna
+MAGENTO_ADMIN_LASTNAME=Troi
+MAGENTO_ADMIN_EMAIL=deanna@getnacelle.com
+MAGENTO_ADMIN_USERNAME=nacelle_admin
+MAGENTO_ADMIN_PASSWORD=Wubbalu1*badubdub
+```
 
 ### Start app
 
@@ -125,6 +158,32 @@ $ yarn start
 $ npm run start
 ```
 
+## Docker
+
+### Run in Development
+
+To run the Connector in development and watch for changed files. Uncomment the `volumes` config in the `docker-compose.yml` under `connector` service
+
+```
+volumes:
+      - ~/Sites/nacelle/nacelle-magento-connector:/usr/src/app
+```
+`~/Sites/nacelle/nacelle-magento-connector` would be the absolute path to the repo
+equal to `/Users/<username>/Sites/nacelle/nacelle-magento-connector` on Mac OSX
+
+### Spin up the Containers
+
+The `docker-compose.yml` file will pull in all the necessary containers to run this ecosystem
+
+```
+yarn up
+```
+
+```
+npm run up
+```
+
+This process will take awhile, go grab some coffee. Maybe a bathroom break. You're looking at `>7min`
 
 ## Stateless
 
@@ -152,24 +211,24 @@ router: {
 
 ```bash
 {
-  "magento-endpoint": "http://local.magento/rest/all/V1",
-  "magento-token": "lc2hu71d72ixgq11tu0iot0752haycvm",
   "x-nacelle-space-id": "c888890c8-9999-44e3-4444-eca27cd6e6a6",
   "x-nacelle-space-token": "a3fr665a-ccc4-45ac-8877-17170bc89d42",
+  "magento-endpoint": "http://local.magento/rest/all/V1",
+  "magento-token": "lc2hu71d72ixgq11tu0iot0752haycvm",
   "source-domain": "magentodemo.getnacelle.com"
 }
 ```
 
-Sample CURL request
+Sample `CURL` request
 
 ```bash
 curl \
 -d '{"limit": 25, "defaultLocale": "en-us", "defaultCurrencyCode": "USD"}' \
 -H "Content-Type: application/json" \
--H "magento-endpoint: http://local.magento/rest/all/V1" \
--H "magento-token: lc2hu71d72ixgq11tu0iot0752haycvm" \
 -H "x-nacelle-space-id: c888890c8-9999-44e3-4444-eca27cd6e6a6" \
 -H "x-nacelle-space-token: a3fr665a-ccc4-45ac-8877-17170bc89d42" \
+-H "magento-endpoint: http://local.magento/rest/all/V1" \
+-H "magento-token: lc2hu71d72ixgq11tu0iot0752haycvm" \
 -H "source-domain": "magentodemo.getnacelle.com" \
 -X POST https://connector-host.io/magento/index-products
 ```

@@ -6,18 +6,30 @@
 
 The following will guide you through installation and getting a sample store up and running with the **Nacelle Magento Connector**
 
-For now lets just spin up the `db` `magento` `phpmyadmin` services. We're going to need Magento to be set up in order to generate the needed Tokens.
+### Run in Development
 
-```bash
-$ yarn up:dev db magento phpmyadmin
+To run the Connector in development and watch for changed files. Uncomment the `volumes` config in the `docker-compose.yml` under `connector` service
+
 ```
-```bash
-$ npm run up:dev db magento phpmyadmin
+volumes:
+      - ~/Sites/nacelle/nacelle-magento-connector:/usr/src/app
+```
+`~/Sites/nacelle/nacelle-magento-connector` would be the absolute path to the repo
+equal to `/Users/<username>/Sites/nacelle/nacelle-magento-connector` on Mac OSX
+
+### Spin up the Containers
+
+The `docker-compose.yml` file will pull in all the necessary containers to run this ecosystem
+
+```
+yarn up
 ```
 
-this will just focus the docker-compose on the base services
+```
+npm run up
+```
 
----
+### Install Magento Store
 
 **Get Docker Container ID**
 

@@ -12,8 +12,8 @@ services:
       DILITHIUM_TOKEN: ae48665a-318c-45ac-b274-17170bc89d42
       MAGENTO_HOST: http://local.magento/rest/all/V1
       MAGENTO_TOKEN: lc2hu71d72ixgq11tu0iot0752haycvm
-    volumes:
-      - ~/Sites/nacelle/nacelle-magento-connector:/usr/src/app
+    # volumes:
+    #   - ~/Sites/nacelle/nacelle-magento-connector:/usr/src/app
     # env_file:
     #   - ./.env
     networks:
