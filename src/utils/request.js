@@ -19,7 +19,7 @@ export default async (url, method, params, headers) => {
     }
     return data
   } catch ({ response }) {
-    return Promise.reject(response.data)
+    return Promise.reject(response)
   }
 
 }

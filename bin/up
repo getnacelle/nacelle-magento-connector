@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
 # This will create magento and mysql docker containers
-docker-compose -f docker-compose-dev.yml up -d
+docker-compose up -d
 echo "Magento & MySQL Servers are Up"
 # Get the new Docker Container ID for the nacelle-magento-demo Container
 mysqlContainer=$(docker inspect --format={{.Id}} nacelle-magento-db)

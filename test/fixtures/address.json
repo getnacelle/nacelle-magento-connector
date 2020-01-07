@@ -1,0 +1,13 @@
+{
+  "address": {
+    "region": "California",
+    "region_id": 12,
+    "region_code": "CA",
+    "country_id": "US",
+    "street": [
+      "12345 Some St."
+    ],
+    "postcode": "91000",
+    "city": "Some City"
+  }
+}

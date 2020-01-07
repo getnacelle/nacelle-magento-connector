@@ -41,7 +41,10 @@ export default {
     allowOrigins: '*'
   },
   router: {
-    requiredHeaders: []
+    requiredHeaders: [
+      'magento-host',
+      'magento-token'
+    ]
   },
 
   dilithium: {

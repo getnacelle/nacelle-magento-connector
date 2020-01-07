@@ -8,6 +8,6 @@ COPY . .
 
 RUN npm install
 
-EXPOSE 3000
+EXPOSE 3000 9615
 
-CMD ["pm2", "start", "./pm2.yml"]
+CMD ["pm2-runtime", "start", "./pm2.yml"]

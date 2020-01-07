@@ -1,0 +1,93 @@
+{
+    "payment_methods": [
+        {
+            "code": "purchaseorder",
+            "title": "Purchase Order"
+        },
+        {
+            "code": "checkmo",
+            "title": "Check / Money order"
+        }
+    ],
+    "totals": {
+        "grand_total": 208.8,
+        "base_grand_total": 208.8,
+        "subtotal": 236,
+        "base_subtotal": 236,
+        "discount_amount": -47.2,
+        "base_discount_amount": -47.2,
+        "subtotal_with_discount": 188.8,
+        "base_subtotal_with_discount": 188.8,
+        "shipping_amount": 20,
+        "base_shipping_amount": 20,
+        "shipping_discount_amount": 0,
+        "base_shipping_discount_amount": 0,
+        "tax_amount": 0,
+        "base_tax_amount": 0,
+        "weee_tax_applied_amount": null,
+        "shipping_tax_amount": 0,
+        "base_shipping_tax_amount": 0,
+        "subtotal_incl_tax": 236,
+        "shipping_incl_tax": 20,
+        "base_shipping_incl_tax": 20,
+        "base_currency_code": "USD",
+        "quote_currency_code": "USD",
+        "items_qty": 4,
+        "items": [
+            {
+                "item_id": 18,
+                "price": 59,
+                "base_price": 59,
+                "qty": 4,
+                "row_total": 236,
+                "base_row_total": 236,
+                "row_total_with_discount": 0,
+                "tax_amount": 0,
+                "base_tax_amount": 0,
+                "tax_percent": 0,
+                "discount_amount": 47.2,
+                "base_discount_amount": 47.2,
+                "discount_percent": 20,
+                "price_incl_tax": 59,
+                "base_price_incl_tax": 59,
+                "row_total_incl_tax": 236,
+                "base_row_total_incl_tax": 236,
+                "options": "[]",
+                "weee_tax_applied_amount": null,
+                "weee_tax_applied": null,
+                "name": "Fusion Backpack"
+            }
+        ],
+        "total_segments": [
+            {
+                "code": "subtotal",
+                "title": "Subtotal",
+                "value": 236
+            },
+            {
+                "code": "discount",
+                "title": "Discount",
+                "value": -47.2
+            },
+            {
+                "code": "shipping",
+                "title": "Shipping & Handling (Flat Rate - Fixed)",
+                "value": 20
+            },
+            {
+                "code": "tax",
+                "title": "Tax",
+                "value": 0,
+                "extension_attributes": {
+                    "tax_grandtotal_details": []
+                }
+            },
+            {
+                "code": "grand_total",
+                "title": "Grand Total",
+                "value": 208.8,
+                "area": "footer"
+            }
+        ]
+    }
+}

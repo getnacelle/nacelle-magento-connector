@@ -1,0 +1,26 @@
+[
+    {
+        "carrier_code": "flatrate",
+        "method_code": "flatrate",
+        "carrier_title": "Flat Rate",
+        "method_title": "Fixed",
+        "amount": 20,
+        "base_amount": 20,
+        "available": true,
+        "error_message": "",
+        "price_excl_tax": 20,
+        "price_incl_tax": 20
+    },
+    {
+        "carrier_code": "tablerate",
+        "method_code": "bestway",
+        "carrier_title": "Best Way",
+        "method_title": "Table Rate",
+        "amount": 0,
+        "base_amount": 0,
+        "available": true,
+        "error_message": "",
+        "price_excl_tax": 0,
+        "price_incl_tax": 0
+    }
+]

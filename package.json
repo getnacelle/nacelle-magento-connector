@@ -1,12 +1,12 @@
 {
   "name": "@nacelle/nacelle-magento-connector",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Nacelle connector for Magento Storefront",
   "main": "app.js",
   "repository": "git@github.com:getnacelle/nacelle-magento-connector.git",
   "author": {
     "name": "Nacelle",
-    "email": "<ltcdr.data@getnacelle.com>"
+    "email": "ltcdr.data@getnacelle.com"
   },
   "contributors": [
     {
@@ -18,9 +18,8 @@
   "private": true,
   "scripts": {
     "start": "./bin/start",
-    "start:dev": "./bin/start-dev",
-    "up:dev:app": "./bin/up-dev",
-    "down:dev": "./bin/down-dev",
+    "up": "./bin/up",
+    "down": "./bin/down",
     "test": "./bin/test",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",

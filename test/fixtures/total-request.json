@@ -1,0 +1,31 @@
+{
+  "addressInformation": {
+    "billing_address": {
+      "region": "California",
+      "region_id": 12,
+      "region_code": "CA",
+      "country_id": "US",
+      "street": [
+        "12345 Some St."
+      ],
+      "postcode": "91000",
+      "city": "Some City",
+      "save_in_address_book": 0
+    },
+    "shipping_address": {
+      "region": "California",
+      "region_id": 12,
+      "region_code": "CA",
+      "country_id": "US",
+      "street": [
+        "12345 Some St."
+      ],
+      "postcode": "91000",
+      "city": "Some City",
+      "same_as_billing": 1,
+      "save_in_address_book": 0
+    },
+    "shipping_method_code": "flatrate",
+    "shipping_carrier_code": "flatrate"
+  }
+}

@@ -3,13 +3,16 @@ module.exports = {
   moduleFileExtensions: ['js'],
   collectCoverageFrom: [
     '**/*.js',
-    '!**/node_modules/**',
-    '!*.config.js',
-    '!config/app.js',
-    '!lib/server.js',
-    '!lib/logger.js',
-    '!**/*-test.js',
-    '!**/test/helpers/*.js'
+    '!*.config.js'
+  ],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    '/coverage/',
+    '/app.js',
+    '/config/app.js',
+    '/lib/logger.js',
+    '/lib/server.js',
+    '/test/'
   ],
   coverageReporters: [
     'json-summary',

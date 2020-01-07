@@ -1,0 +1,96 @@
+{
+    "id": 4,
+    "created_at": "2020-01-07 04:47:36",
+    "updated_at": "2020-01-07 04:48:09",
+    "is_active": true,
+    "is_virtual": false,
+    "items": [
+        {
+            "item_id": 5,
+            "sku": "24-MB01",
+            "qty": 4,
+            "name": "Joust Duffle Bag",
+            "price": 34,
+            "product_type": "simple",
+            "quote_id": "4"
+        }
+    ],
+    "items_count": 1,
+    "items_qty": 4,
+    "customer": {
+        "email": null,
+        "firstname": null,
+        "lastname": null
+    },
+    "billing_address": {
+        "id": 10,
+        "region": null,
+        "region_id": null,
+        "region_code": null,
+        "country_id": null,
+        "street": [
+            ""
+        ],
+        "telephone": null,
+        "postcode": null,
+        "city": null,
+        "firstname": null,
+        "lastname": null,
+        "email": null,
+        "same_as_billing": 0,
+        "save_in_address_book": 0
+    },
+    "orig_order_id": 0,
+    "currency": {
+        "global_currency_code": "USD",
+        "base_currency_code": "USD",
+        "store_currency_code": "USD",
+        "quote_currency_code": "USD",
+        "store_to_base_rate": 0,
+        "store_to_quote_rate": 0,
+        "base_to_global_rate": 1,
+        "base_to_quote_rate": 1
+    },
+    "customer_is_guest": false,
+    "customer_note_notify": true,
+    "customer_tax_class_id": 3,
+    "store_id": 1,
+    "extension_attributes": {
+        "shipping_assignments": [
+            {
+                "shipping": {
+                    "address": {
+                        "id": 11,
+                        "region": null,
+                        "region_id": null,
+                        "region_code": null,
+                        "country_id": null,
+                        "street": [
+                            ""
+                        ],
+                        "telephone": null,
+                        "postcode": null,
+                        "city": null,
+                        "firstname": null,
+                        "lastname": null,
+                        "email": null,
+                        "same_as_billing": 1,
+                        "save_in_address_book": 0
+                    },
+                    "method": null
+                },
+                "items": [
+                    {
+                        "item_id": 5,
+                        "sku": "24-MB01",
+                        "qty": 4,
+                        "name": "Joust Duffle Bag",
+                        "price": 34,
+                        "product_type": "simple",
+                        "quote_id": "4"
+                    }
+                ]
+            }
+        ]
+    }
+}

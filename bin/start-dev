@@ -1,3 +1,0 @@
-#!/bin/sh
-
-pm2-runtime start ./pm2-dev.yml

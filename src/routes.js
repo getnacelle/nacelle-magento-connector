@@ -1,9 +1,4 @@
-const gobalRequiredHeaders = [
-  'magento-host',
-  'magento-token'
-]
 const indexingHeaders = [
-  ...gobalRequiredHeaders,
   'x-nacelle-space-id',
   'x-nacelle-space-token',
   'source-domain'
@@ -29,38 +24,14 @@ export default {
     requiredHeaders: indexingHeaders
   },
   // Cart
-  'POST /magento/cart': {
-    controller: 'magento/cart/create',
-    requiredHeaders: gobalRequiredHeaders
-  },
-  'GET /magento/cart/:cartId': {
-    controller: 'magento/cart/find-one',
-    requiredHeaders: gobalRequiredHeaders
-  },
-  'PUT /magento/cart/:cartId': {
-    controller: 'magento/cart/update',
-    requiredHeaders: gobalRequiredHeaders
-  },
-  'GET /magento/cart/:cartId/payment-methods': {
-    controller: 'magento/cart/payment-methods',
-    requiredHeaders: gobalRequiredHeaders
-  },
-  'POST /magento/cart/:cartId/shipping-methods': {
-    controller: 'magento/cart/shipping-methods',
-    requiredHeaders: gobalRequiredHeaders
-  },
-  'POST /magento/cart/:cartId/total': {
-    controller: 'magento/cart/total',
-    requiredHeaders: gobalRequiredHeaders
-  },
+  'POST /magento/cart': 'magento/cart/create',
+  'GET /magento/cart/:cartId': 'magento/cart/find-one',
+  'PUT /magento/cart/:cartId': 'magento/cart/update',
+  'GET /magento/cart/:cartId/payment-methods': 'magento/cart/payment-methods',
+  'POST /magento/cart/:cartId/shipping-methods': 'magento/cart/shipping-methods',
+  'POST /magento/cart/:cartId/total': 'magento/cart/total',
   // Checkout
-  'POST /magento/checkout/:cartId': {
-    controller: 'magento/cart/checkout',
-    requiredHeaders: gobalRequiredHeaders
-  },
+  'POST /magento/checkout/:cartId': 'magento/cart/checkout',
   // Orders
-  'GET /magento/orders/:orderId': {
-    controller: 'magento/order/find-one',
-    requiredHeaders: gobalRequiredHeaders
-  }
+  'GET /magento/orders/:orderId': 'magento/order/find-one'
 }
