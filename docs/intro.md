@@ -4,7 +4,7 @@ Nacelle connector for Magento Storefront. Built on top of Express Engine, The Na
 
 ## Intro
 
-![Architecture](/connector-architecture.png)
+![Architecture](/common-connector.png)
 
 ## Structure
 

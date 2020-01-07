@@ -72,6 +72,7 @@ module.exports = {
         title: 'Development',
         collapsable: false,
         children: [
+          '/development/integration',
           '/development/demo-store', 
           '/development/manual-store-setup', 
           '/development/dev-docker', 
