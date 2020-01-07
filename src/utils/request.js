@@ -5,12 +5,10 @@ axios.defaults.headers.post['Content-Type'] = 'application/json'
 export default async (url, method, params, headers) => {
 
   const options = { method, url, headers }
-  if (params) {
-    if (method === 'GET') {
-      options.params = params
-    } else {
-      options.data = params
-    }
+  if (params && method === 'GET') {
+    options.params = params
+  } else if(params) {
+    options.data = params
   }
 
   try {
@@ -35,12 +33,13 @@ export const requireParams = (req, ...required) => {
         missing.push(param)
       }
     } else if(Array.isArray(param)) {
+      const [_param, type] = param
       if (type === 'array') {
         if(!reqParams.hasOwnProperty(_param) || !Array.isArray(reqParams[_param]) || !reqParams[_param].length) {
           missing.push(param)
         }
       } else {
-        if (!reqParams.hasOwnProperty(_param) || typeof _param !== type) {
+        if (!reqParams.hasOwnProperty(_param) || typeof reqParams[_param] !== type) {
           missing.push(param)
         }
       }

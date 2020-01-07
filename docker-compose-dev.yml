@@ -52,17 +52,19 @@ services:
       - db-data:/var/lib/mysql/data
     networks:
       - magento-demo
-
-  # PHPMyAdmin DB Admin Tool
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: nacelle-phpmyadmin
-    networks:
-      - magento-demo
-    depends_on:
-      - db
     ports:
-      - '8580:80'
+        - '3306:3306'
+
+  # PHPMyAdmin DB Admin Tool (Optional)
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   container_name: nacelle-phpmyadmin
+  #   networks:
+  #     - magento-demo
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - '8580:80'
 
 volumes:
   db-data:

@@ -1,3 +1,25 @@
 #!/bin/sh
 
+# This will create magento and mysql docker containers
 docker-compose -f docker-compose-dev.yml up -d
+echo "Magento & MySQL Servers are Up"
+# Get the new Docker Container ID for the nacelle-magento-demo Container
+mysqlContainer=$(docker inspect --format={{.Id}} nacelle-magento-db)
+magentoContainer=$(docker inspect --format={{.Id}} nacelle-magento-demo)
+echo "Magento Container ID: $magentoContainer"
+# We need to wait for MySQL to be ready to connect before we can install the Magento Store and Sample Data
+while ! docker exec $mysqlContainer mysqladmin --user=nacelle_admin --password=nacelle_demo ping --silent &> /dev/null ; do
+    echo "Waiting for database connection..."
+    sleep 1
+done
+
+echo "Database ready!"
+# Install the Magento Store based on the configuration
+echo "Installing Magento Store Configuration"
+docker exec -it $magentoContainer install-magento
+echo "Magento Store Installed"
+# Install the Magento Demo Store
+echo "Installing Sample Data"
+docker exec -it $magentoContainer install-sampledata
+echo "Magento Sample Data Installed"
+echo "Magento Store Configuration Complete!"

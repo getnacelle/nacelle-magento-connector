@@ -1,6 +1,6 @@
 {
   "name": "@nacelle/nacelle-magento-connector",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Nacelle connector for Magento Storefront",
   "main": "app.js",
   "repository": "git@github.com:getnacelle/nacelle-magento-connector.git",
@@ -19,9 +19,12 @@
   "scripts": {
     "start": "./bin/start",
     "start:dev": "./bin/start-dev",
-    "up:dev": "./bin/up-dev",
+    "up:dev:app": "./bin/up-dev",
     "down:dev": "./bin/down-dev",
-    "test": "./bin/test"
+    "test": "./bin/test",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "coverage": "make-coverage-badge"
   },
   "dependencies": {
     "@babel/core": "^7.7.7",
@@ -39,12 +42,14 @@
     "ora": "^4.0.3",
     "pm2": "^4.2.1",
     "querystrings": "^0.4.0",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "vuepress": "^1.2.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.7.6",
     "@babel/runtime": "^7.7.7",
     "babel-jest": "^24.9.0",
+    "eslint": "^6.8.0",
     "jest": "^24.9.0",
     "make-coverage-badge": "^1.2.0"
   }

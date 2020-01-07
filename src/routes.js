@@ -4,8 +4,8 @@ const gobalRequiredHeaders = [
 ]
 const indexingHeaders = [
   ...gobalRequiredHeaders,
-  'org-token',
-  'org-id',
+  'x-nacelle-space-id',
+  'x-nacelle-space-token',
   'source-domain'
 ]
 
