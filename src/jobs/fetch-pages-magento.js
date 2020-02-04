@@ -1,6 +1,5 @@
 import Magento from '../services/magento'
 import { connector } from '../../config/app'
-
 import normalizer from '../normalizers/page'
 import fetchMagento from '../helpers/magento/concurrently-fetch-magento'
 
@@ -21,12 +20,12 @@ export default {
       description: 'Magento API access token',
       required: true
     },
-    orgId: {
+    xNacelleSpaceId: {
       type: 'string',
       description: 'Nacelle Organization ID',
       required: true
     },
-    orgToken: {
+    xNacelleSpaceToken: {
       type: 'string',
       description: 'Nacelle Organization access token',
       required: true
@@ -57,8 +56,8 @@ export default {
   async fn({
     magentoHost,
     magentoToken,
-    orgId,
-    orgToken,
+    xNacelleSpaceId,
+    xNacelleSpaceToken,
     sourceDomain,
     limit,
     secure
@@ -80,8 +79,8 @@ export default {
       connector.jobs.schedule('push-dilithium', {
         items,
         sourceDomain,
-        orgId,
-        orgToken,
+        xNacelleSpaceId,
+        xNacelleSpaceToken,
         resource: 'content',
         type: 'cms'
       })

@@ -9,9 +9,6 @@ export default async (req, res) => {
     const { cartId, items } = req.allParams()
 
     const {
-      sourceDomain,
-      orgId,
-      orgToken,
       magentoHost,
       magentoToken
     } = req.getValidatedHeaders()

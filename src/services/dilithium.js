@@ -14,8 +14,8 @@ export default class Dilithium {
 
   get authHeader() {
     return {
-      'org-id': this.clientId,
-      token: this.clientToken
+      'x-nacelle-space-id': this.clientId,
+      'x-nacelle-space-token': this.clientToken
     }
   }
 

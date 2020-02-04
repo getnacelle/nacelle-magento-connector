@@ -7,8 +7,8 @@ export default async (req, res) => {
     // Explicitly select the params we want to use from the validatedHeaders object
     const {
       sourceDomain,
-      orgId,
-      orgToken,
+      xNacelleSpaceId,
+      xNacelleSpaceToken,
       magentoHost,
       magentoToken
     } = req.getValidatedHeaders()
@@ -17,8 +17,8 @@ export default async (req, res) => {
     connector.jobs.schedule('fetch-categories-magento', {
       magentoHost,
       magentoToken,
-      orgId,
-      orgToken,
+      xNacelleSpaceId,
+      xNacelleSpaceToken,
       sourceDomain,
       limit
     })

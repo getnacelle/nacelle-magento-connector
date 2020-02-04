@@ -1,7 +1,5 @@
 import Dilithium from '../services/dilithium'
-
 import { camelCase, capitalize } from '../utils/string-helpers'
-import normalizer from '../normalizers/product'
 import { chunk as chunker } from 'lodash'
 
 export default {
@@ -21,12 +19,12 @@ export default {
       description: 'The Magento host you are syncing from',
       required: true
     },
-    orgId: {
+    xNacelleSpaceId: {
       type: 'string',
       description: 'Nacelle Space ID',
       required: true
     },
-    orgToken: {
+    xNacelleSpaceToken: {
       type: 'string',
       description: 'Nacelle Store Token',
       required: true
@@ -57,13 +55,13 @@ export default {
   async fn({
     items,
     sourceDomain,
-    orgId,
-    orgToken,
+    xNacelleSpaceId,
+    xNacelleSpaceToken,
     resource,
     type,
     chunkSize
   }, exits) {
-    const dilithium = new Dilithium(sourceDomain, orgId, orgToken)
+    const dilithium = new Dilithium(sourceDomain, xNacelleSpaceId, xNacelleSpaceToken)
     const mutationName = camelCase(`index-${resource}`)
     const mutationInputName = capitalize(camelCase(`index-${resource}-input`))
     // chunk the items in to ingestible size
@@ -77,7 +75,6 @@ export default {
         return dilithium.save(...query)
       })
       const results = await Promise.all(promises)
-
       return exits.success(results)
     } catch (e) {
       return exits.error(new Error(e))
